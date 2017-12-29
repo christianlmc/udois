@@ -3,7 +3,13 @@
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 
 // Variables
-@import "variables";
+// @import "variables";
 
 // Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+// @import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+//Bootstrap 4
+@import "~bootstrap/scss/bootstrap";
+
+//Fonts
+@import "~open-iconic/font/css/open-iconic-bootstrap";

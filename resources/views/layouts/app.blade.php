@@ -1,84 +1,62 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+		<!-- CSRF Token -->
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+		<title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Styles -->
-    <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-</head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
-            <div class="container">
-                <div class="navbar-header">
+		<!-- Styles -->
+		<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+		<link href="{{ asset('css/udois.css') }}" rel="stylesheet">
+	</head>
+	<body>
+		<div id="app">
+			<nav class="navbar navbar-dark bg-dark pb-1">
+				<a class="navbar-brand udois text-udois-blue" href="/"><h3>UDOIS</h3></a>
+				<div class="btn-group" role="group">
+					<button class="btn btn-lg btn-dark text-info my-2 my-sm-0" type="button">
+						<span class="oi oi-chat"></span>
+					</button>
+					<button class="btn btn-lg btn-dark text-info my-2 my-sm-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="oi oi-menu"></span>
+					</button>
+					<div class="dropdown-menu">
+						@if(Auth::guest())
+							<a class="dropdown-item {{Request::is("/") ? "active" : " "}}" href="/">Home</a>
+							<a class="dropdown-item {{Request::is("login") ? "active" : " "}}" href="/login">Login/Registro</a>
+						@else
+							<a class="dropdown-item {{Request::is("/") ? "active" : " "}}" href="/">Home</a>
+							<a class="dropdown-item" href="#">Páginas</a>
+							<a class="dropdown-item" href="#">Meu perfil</a>
+						@endif
+					</div>
+				</div>
+			</nav>
+			@yield('content')
+		</div>
+		<footer>
+			<div class="jumbotron jumbotron-fluid mb-0 text-center bg-udois-blue">
+				<div class="container-fluid text-white">
+					<h1 class="udois display-3">UDOIS</h1>
+					<h1 class="udois display-4">+ 8.000 CLIENTES</h1>					
+				</div>
+			</div>
+			<div class="jumbotron jumbotron-fluid mb-0 py-4 text-center bg-dark">
+				<div class="container text-white">
+					<h4 class="display-7">UDOIS</h1>
+					<p>CNPJ: 07.960.232.0001-30</p>
+				</div>
+			</div>
+	    </footer>
 
-                    <!-- Collapsed Hamburger -->
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" aria-expanded="false">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-
-                    <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
-                </div>
-
-                <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="nav navbar-nav">
-                        &nbsp;
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right">
-                        <!-- Authentication Links -->
-                        @guest
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
-                        @else
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
-                                </a>
-
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
-
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        @yield('content')
-    </div>
-
-    <!-- Scripts -->
-    <!-- <script src="{{ asset('js/app.js') }}"></script> -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
-</body>
+		<!-- Scripts -->
+		<script src="{{ mix('js/app.js') }}"></script>
+		<script src="{{ mix('js/popper.js') }}"></script>
+		<script src="{{ mix('js/bootstrap.js') }}"></script>
+	</body>
 </html>
