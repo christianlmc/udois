@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-use App\Usuario;
+use Udois\Usuario;
 
 class CreateUsuariosTable extends Migration
 {
@@ -20,7 +20,7 @@ class CreateUsuariosTable extends Migration
             $table->string('nome');
             $table->string('email')->unique();
             $table->string('senha');
-            $table->boolean('admin');
+            $table->boolean('admin')->default(0);
             $table->string('foto_perfil', 255)->nullable();
             $table->rememberToken();
             $table->timestamps();
