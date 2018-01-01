@@ -19,7 +19,7 @@ class CreateMembrosTable extends Migration
             $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->integer('sala_id')->unsigned();
             $table->foreign('sala_id')->references('id')->on('salas');
-            $table->boolean('admin_sala');
+            $table->boolean('admin_sala')->default(0);
             $table->timestamps();
         });
     }

@@ -4,7 +4,9 @@ namespace Udois;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Membros extends Model
+use Udois\Usuario;
+
+class Membro extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +14,7 @@ class Membros extends Model
      * @var array
      */
     protected $fillable = [
-        'id_usuario', 'id_sala','admin_sala',
+        'usuario_id', 'sala_id','admin_sala',
     ];
 
     /**
@@ -23,4 +25,9 @@ class Membros extends Model
     protected $hidden = [
         // 
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class);
+    }
 }

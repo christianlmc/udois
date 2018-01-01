@@ -12,7 +12,7 @@ class Sala extends Model
      * @var array
      */
     protected $fillable = [
-        'nome', 'foto_sala',
+        'nome', 'foto_sala', 'descricao', 'grupo',
     ];
 
     /**

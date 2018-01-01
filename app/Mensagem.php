@@ -4,7 +4,7 @@ namespace Udois;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Mensagens extends Model
+class Mensagem extends Model
 {
     /**
      * The attributes that are mass assignable.

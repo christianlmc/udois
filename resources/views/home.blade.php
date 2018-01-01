@@ -1,23 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
 
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
-                </div>
-            </div>
+<ul class="list-group">
+    @foreach ($salas as $sala)
+    <a href="#" class="media list-group-item-action">
+    	@if($sala->foto == null)
+        	<img class="align-self-center mr-3 rounded-circle img-fluid img-thumbnail" width="80px" src="{{ $sala->grupo ? asset('group.png') : asset('user.png')}}">
+        @else
+        	<img class="align-self-center mr-3 rounded-circle img-fluid img-thumbnail" width="80px" src="{{Storage::url($sala->sala_foto)}}">
+        @endif
+        <div class="media-body">
+            <h5 class="mt-0 mb-1">{{ $sala->nome }}</h5>
+            <small class="text-muted">{{ $sala->descricao }}</small>
         </div>
-    </div>
-</div>
+    </a>
+    <hr class="col-12 my-1">
+    @endforeach
+</ul>
 @endsection

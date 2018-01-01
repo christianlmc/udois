@@ -23,7 +23,7 @@
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" aria-describedby="email" placeholder="Email" value="{{ $errors->has('email') ? old('email') : '' }}">
+							<input type="email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" aria-describedby="email" placeholder="Email" value="{{ $errors->has('email') ? old('email') : '' }}" required>
 							<div class="invalid-feedback">
 								{{ $errors->first('email') }}
 							</div>
@@ -33,7 +33,7 @@
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="password" class="form-control" name="senha" placeholder="Senha">
+							<input type="password" class="form-control" name="senha" placeholder="Senha" required>
 						</div>
 					</div>
 				</div>
@@ -45,7 +45,7 @@
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="text" class="form-control {{ $errors->register->has('nome') ? ' is-invalid' : '' }}" name="nome" aria-describedby="nome" placeholder="Nome" value="{{ old('nome') }}">
+							<input type="text" class="form-control {{ $errors->register->has('nome') ? ' is-invalid' : '' }}" name="nome" aria-describedby="nome" placeholder="Nome" value="{{ old('nome') }}" required>
 							<div class="invalid-feedback">
 								{{ $errors->register->first('nome') }}
 							</div>
@@ -55,7 +55,7 @@
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="email" class="form-control {{ $errors->register->has('email') ? ' is-invalid' : '' }}" name="email" aria-describedby="email" placeholder="Email" value="{{ $errors->register->has('email') ? old('email') : '' }}">
+							<input type="email" class="form-control {{ $errors->register->has('email') ? ' is-invalid' : '' }}" name="email" aria-describedby="email" placeholder="Email" value="{{ $errors->register->has('email') ? old('email') : '' }}" required>
 							<div class="invalid-feedback">
 								{{ $errors->register->first('email') }}
 							</div>
@@ -65,7 +65,7 @@
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="password" class="form-control {{ $errors->register->has('senha') ? ' is-invalid' : '' }}" name="senha" placeholder="Senha">
+							<input type="password" class="form-control {{ $errors->register->has('senha') ? ' is-invalid' : '' }}" name="senha" placeholder="Senha" required>
 							<div class="invalid-feedback">
 								{{ $errors->register->first('senha') }}
 							</div>
@@ -75,7 +75,7 @@
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="password" class="form-control" name="senha_confirmation" placeholder="Confirmar Senha">
+							<input type="password" class="form-control" name="senha_confirmation" placeholder="Confirmar Senha" required>
 						</div>
 					</div>
 				</div>

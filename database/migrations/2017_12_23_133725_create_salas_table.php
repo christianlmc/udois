@@ -17,6 +17,8 @@ class CreateSalasTable extends Migration
             $table->increments('id');
             $table->string('nome')->nullable();
             $table->string('foto_sala')->nullable();
+            $table->string('descricao')->nullable();
+            $table->boolean('grupo')->default(0);
             $table->timestamps();
         });
     }

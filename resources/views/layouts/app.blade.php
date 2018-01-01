@@ -21,11 +21,17 @@
 		<script src="{{ mix('js/popper.js') }}"></script>
 		<script src="{{ mix('js/bootstrap.js') }}"></script>
 		<nav class="navbar navbar-dark bg-dark pb-1">
-			<a class="navbar-brand udois text-udois-blue" href="/"><h3>UDOIS</h3></a>
+			@if(starts_with(Request::route()->getName(), "navbar-custom-name"))
+				<h3 class="navbar-brand udois text-udois-blue">{{title_case(str_after(Request::route()->getName(), "navbar-custom-name"))}}</h3></p>
+			@else			
+				<a class="navbar-brand udois text-udois-blue" href="/"><h3>UDOIS</h3></a>
+			@endif
 			<div class="btn-group" role="group">
-				<button class="btn btn-lg btn-dark text-info my-2 my-sm-0" type="button">
+				@if(!Request::is("home"))
+				<a class="btn btn-lg btn-dark text-info my-2 my-sm-0" href="/home" >
 					<span class="oi oi-chat"></span>
-				</button>
+				</a>
+				@endif
 				<button class="btn btn-lg btn-dark text-info my-2 my-sm-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span class="oi oi-menu"></span>
 				</button>
@@ -36,7 +42,7 @@
 					@else
 						<a class="dropdown-item {{Request::is("/") ? "active" : " "}}" href="/">Home</a>
 						<a class="dropdown-item" href="#">Páginas</a>
-						<a class="dropdown-item" href="#">Meu perfil</a>
+						<a class="dropdown-item {{Request::is("meu-perfil") ? "active" : " " }}" href="/meu-perfil">Meu perfil</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                                      document.getElementById('logout-form').submit();">
@@ -49,7 +55,9 @@
 				</div>
 			</div>
 		</nav>
-		@yield('content')
+		<div style="min-height: 63vh">
+			@yield('content')
+		</div>
 		<footer>
 			<div class="jumbotron jumbotron-fluid mb-0 text-center bg-udois-blue">
 				<div class="container-fluid text-white">
@@ -60,7 +68,7 @@
 			<div class="jumbotron jumbotron-fluid mb-0 py-4 text-center bg-dark">
 				<div class="container text-white">
 					<h4 class="display-7">UDOIS</h1>
-					<p>CNPJ: 07.960.232.0001-30</p>
+					<p>CNPJ: 07.960.232/0001-30</p>
 				</div>
 			</div>
 	    </footer>
