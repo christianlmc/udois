@@ -15,7 +15,6 @@ class ArquivoController extends Controller
     public function show($filename)
     {
     	if(Storage::exists('public/'.$filename)){
-        	// return response()->download(Storage_path('app/public/'.$filename), null, [], null);
         	return response()->file(Storage_path('app/public/'.$filename));
 		}
 		else{

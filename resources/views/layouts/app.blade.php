@@ -20,6 +20,7 @@
 		<script src="{{ mix('js/app.js') }}"></script>
 		<script src="{{ mix('js/popper.js') }}"></script>
 		<script src="{{ mix('js/bootstrap.js') }}"></script>
+
 		<nav class="navbar navbar-dark bg-dark pb-1">
 			@if(starts_with(Request::route()->getName(), "navbar-custom-name"))
 				<h3 class="navbar-brand udois text-udois-blue">{{title_case(str_after(Request::route()->getName(), "navbar-custom-name"))}}</h3></p>
@@ -42,7 +43,7 @@
 					@else
 						<a class="dropdown-item {{Request::is("/") ? "active" : " "}}" href="/">Home</a>
 						<a class="dropdown-item" href="#">Páginas</a>
-						<a class="dropdown-item {{Request::is("meu-perfil") ? "active" : " " }}" href="/meu-perfil">Meu perfil</a>
+						<a class="dropdown-item {{Request::is("perfil") ? "active" : " " }}" href="/perfil">Meu perfil</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                                      document.getElementById('logout-form').submit();">

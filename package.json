@@ -20,6 +20,9 @@
     },
     "dependencies": {
         "bootstrap": "^4.0.0-beta.3",
+        "cropit": "^0.5.1",
+        "cropperjs": "^1.2.1",
+        "croppie": "^2.5.1",
         "open-iconic": "^1.1.1",
         "popper.js": "^1.12.9"
     }
