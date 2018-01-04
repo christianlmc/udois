@@ -21,8 +21,8 @@ Auth::routes();
 Route::group(['as'=>'navbar-custom-name', 'middleware'=>'auth'], function(){
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/perfil','UsuarioController@index')->name('perfil');
-	Route::post('/perfil/atualizar','UsuarioController@atualizarPerfil')->name('perfil');
+	Route::post('/perfil','UsuarioController@atualizarPerfil')->name('perfil');
 
 });
 
-Route::get('storage/{filename}','ArquivoController@show')->middleware('auth');
+Route::get('storage/{folder}/{filename}','ArquivoController@showProfiles')->middleware('auth');

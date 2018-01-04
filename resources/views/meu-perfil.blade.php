@@ -9,21 +9,20 @@
 			<div class="row justify-content-center">
 				<h2 id="title">Editar Perfil</h2>
 			</div>
-			{!! Form::open(array('url' => '/perfil/atualizar', 'id' => 'login-form', 'files' => true)) !!}
+			@if (session('status'))
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4 text-center">
-						<div class="form-group">
-						<img id="profile-pic" class="align-self-center rounded-circle img-fluid img-thumbnail" width="200px" src="{{ Auth::user()->foto_perfil ? Auth::user()->foto_perfil : asset('user.png')}}">
-						</div>
-					</div>
+				    <div class="col-sm col-md-4 alert alert-success">
+				        {{ session('status') }}
+				    </div>
 				</div>
-				<!-- Button trigger modal -->
+			@endif
+			{!! Form::open(array('url' => '/perfil', 'id' => 'login-form', 'files' => true)) !!}
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4 text-center">
 						<div class="form-group">
-							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#change-profile-pic">
-								Alterar foto
-							</button>
+							<a href="javascript:void(0)" data-toggle="modal" data-target="#change-profile-pic">
+								<img id="profile-pic" class="align-self-center rounded-circle img-fluid img-thumbnail" width="200px" src="{{ Auth::user()->foto_perfil ? Storage::url('profiles/' . Auth::user()->foto_perfil) : asset('user.png')}}">
+							</a>
 						</div>
 					</div>
 				</div>
@@ -33,44 +32,36 @@
 				<input type="text" id="photo-file" name="foto_perfil" value="" hidden>
 				
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-8 col-md-3">
 						<div class="form-group">
-							<input type="text" class="form-control {{ $errors->has('nome') ? ' is-invalid' : '' }}" name="nome" aria-describedby="nome" placeholder="Nome" value="{{ old('nome') ? old('nome') : Auth::user()->nome }}" required>
+							<input type="text" class="form-control {{ $errors->has('nome') ? ' is-invalid' : '' }}" name="nome" aria-describedby="nome" placeholder="Nome" value="{{ old('nome') ? old('nome') : Auth::user()->nome }}" required {{ $errors->has('nome') ? '' : 'disabled' }}>
 							<div class="invalid-feedback">
 								{{ $errors->register->first('nome') }}
 							</div>
 						</div>
 					</div>
+					<a class="col-4 col-md-1" href="javascript:void(0)" onclick="enableNameField()" >Alterar</a>	
 				</div>
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-8 col-md-3">
 						<div class="form-group">
-							<input type="password" class="form-control {{ $errors->has('senha_antiga') ? ' is-invalid' : '' }}" name="senha_antiga" placeholder="Senha Antiga" required>
-							<div class="invalid-feedback">
-								{{ $errors->first('senha_antiga') }}
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
-						<div class="form-group">
-							<input type="password" class="form-control {{ $errors->has('senha') ? ' is-invalid' : '' }}" name="senha" placeholder="Nova Senha" required>
+							<input type="password" class="form-control {{ $errors->has('senha') ? ' is-invalid' : '' }}" name="senha" placeholder="Nova Senha" required {{ $errors->has('senha') ? '' : 'disabled' }}>
 							<div class="invalid-feedback">
 								{{ $errors->first('senha') }}
 							</div>
 						</div>
 					</div>
+					<a class="col-4 col-md-1" href="javascript:void(0)" onclick="enablePasswordField()" >Alterar</a>		
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="password" class="form-control" name="senha_confirmation" placeholder="Confirmar Nova Senha" required>
+							<input type="password" class="form-control" name="senha_confirmation" placeholder="Confirmar Nova Senha" required {{ $errors->has('senha') ? '' : 'disabled' }}>
 						</div>
-					</div>
+					</div>	
 				</div>
 				<div class="row justify-content-center">
-					<button type="submit" class="btn btn-udois-blue text-white">Alterar</button>
+					<button type="submit" class="btn btn-udois-blue text-white">Salvar Alterações</button>
 				</div>
 			{!! Form::close() !!}
 		</div>
@@ -91,9 +82,9 @@
 				<div id="edit-profile"></div>
 			</div>
 			<div class="modal-footer">
-				<button id="upload-photo" class="btn btn-udois-blue text-white" onclick="chooseFile();">Selecionar nova foto</button>
-				<button id="send-photo" class="btn btn-udois-blue text-white" data-dismiss="modal">Salvar Alterações</button>
-				<button id="cancel-upload" class="btn btn-udois-blue text-white" data-dismiss="modal">Cancelar</button>
+				<button id="upload-photo" class="btn btn-udois-blue text-white" onclick="chooseFile();">Escolher outra foto</button>
+				<button id="send-photo" class="btn btn-success text-white" data-dismiss="modal">Salvar Alterações</button>
+				<button id="cancel-upload" class="btn btn-danger text-white" data-dismiss="modal">Cancelar</button>
 			</div>
 		</div>
 	</div>
@@ -117,7 +108,7 @@ $('#change-profile-pic').on('shown.bs.modal', function (e) {
 	$('#cancel-upload').show();	
 	
 	$('#send-photo').on('click', function () {
-		$uploadCrop.croppie('result').then(function (resp) {
+		$uploadCrop.croppie('result', {circle: false, type: 'canvas'}).then(function (resp) {
 			$("#profile-pic").attr('src', resp);
 			$("#photo-file").attr('value', resp);
 		});
@@ -130,9 +121,19 @@ $('#change-profile-pic').on('hidden.bs.modal', function (e) {
 	$("#edit-profile").empty();
 });
 
+function enableNameField() {
+	$('input[name="nome"]').prop("disabled", false);
+}
+
+function enablePasswordField() {
+	$('input[type="password"]').prop("disabled", false);
+}
+
+
 function chooseFile() {
     $("#upload").click();
 }
+
 
 function readFile(input) {
 	if (input.files && input.files[0]) {

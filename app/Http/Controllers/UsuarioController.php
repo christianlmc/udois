@@ -4,6 +4,8 @@ namespace Udois\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Udois\Usuario;
+use Auth;
 use Illuminate\Support\Facades\Storage;
 
 class UsuarioController extends Controller
@@ -15,13 +17,29 @@ class UsuarioController extends Controller
 
     public function atualizarPerfil(Request $request)
     {
-    	$data = $request->input('foto_perfil');
+    	$request->validate([
+	    	'nome' => 'sometimes|required',
+	    	'senha' => 'sometimes|required|confirmed',
+	    ]);
 
-    	list($type, $data) = explode(';', $data);
-    	list(, $data) = explode(',', $data);
+    	$foto = $request->input('foto_perfil');
 
-    	$data = base64_decode($data);
-
-    	Storage::put('public/', $data);
-    }
+    	if($foto){
+    		list($type, $foto) = explode(';', $foto);
+    		list(, $foto) = explode(',', $foto);
+	    	
+	    	if(base64_encode(base64_decode($foto)) === $foto){	//Verifica se a foto esta no formato correto
+	    		$foto = base64_decode($foto);
+	    		$nome_foto = 'profile_' . Auth::id() . time() . '.png';
+	    		Storage::put('public/profiles/' . $nome_foto, $foto);
+	    		$request->merge(['foto_perfil' => $nome_foto]);
+	    	}
+	    	else{
+	    		return back();
+	    	}
+	    }
+	    Auth::user()->update($request->all());
+	    
+	    return back()->with('status', 'Perfil Atualizado!');
+	}
 }

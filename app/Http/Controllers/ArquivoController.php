@@ -12,10 +12,10 @@ class ArquivoController extends Controller
         $this->middleware('auth');
     }
 
-    public function show($filename)
+    public function showProfiles($folder, $filename)
     {
-    	if(Storage::exists('public/'.$filename)){
-        	return response()->file(Storage_path('app/public/'.$filename));
+    	if(Storage::exists('public/'. $folder . '/' . $filename)){
+        	return response()->file(Storage_path('app/public/'. $folder . '/' .$filename));
 		}
 		else{
 			return "Esse arquivo não existe ou foi deletado";
