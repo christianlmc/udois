@@ -42,7 +42,9 @@
 						<a class="dropdown-item {{Request::is("login") ? "active" : " "}}" href="/login">Login/Registro</a>
 					@else
 						<a class="dropdown-item {{Request::is("/") ? "active" : " "}}" href="/">Home</a>
-						<a class="dropdown-item" href="#">Páginas</a>
+						@if(Auth::user()->admin)
+							<a class="dropdown-item" href="#">Páginas</a>
+						@endif
 						<a class="dropdown-item {{Request::is("perfil") ? "active" : " " }}" href="/perfil">Meu perfil</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();

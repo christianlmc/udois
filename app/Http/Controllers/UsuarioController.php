@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Udois\Usuario;
 use Auth;
+use Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UsuarioController extends Controller
@@ -37,6 +38,10 @@ class UsuarioController extends Controller
 	    	else{
 	    		return back();
 	    	}
+	    }
+
+	    if ($request->input('senha')) {
+	    	$request->merge(['senha' => Hash::make($request->input('senha'))]);
 	    }
 	    Auth::user()->update($request->all());
 	    
