@@ -16,7 +16,7 @@
 				    </div>
 				</div>
 			@endif
-			{!! Form::open(array('url' => '/perfil', 'id' => 'login-form', 'files' => true)) !!}
+			{!! Form::open(array('url' => '/perfil', 'method' => 'put', 'id' => 'login-form', 'files' => true)) !!}
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4 text-center">
 						<div class="form-group">
@@ -27,7 +27,7 @@
 					</div>
 				</div>
 
-				<input type="file" id="upload"  value="Selecione uma imagem" accept="image/*">
+				<input type="file" id="upload"  value="Selecione uma imagem" accept="image/*" hidden>
 
 				<input type="text" id="photo-file" name="foto_perfil" value="" hidden>
 				
@@ -91,10 +91,6 @@
 </div>
 
 <script>
-$("document").ready(function(){
-	$('input[type=file]').hide();	
-});
-
 $('#change-profile-pic').on('shown.bs.modal', function (e) {
 	$("#edit-profile").empty();
 	var $uploadCrop = $('#edit-profile').croppie({
@@ -133,7 +129,6 @@ function enablePasswordField() {
 function chooseFile() {
     $("#upload").click();
 }
-
 
 function readFile(input) {
 	if (input.files && input.files[0]) {

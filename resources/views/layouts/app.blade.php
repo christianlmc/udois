@@ -43,7 +43,7 @@
 					@else
 						<a class="dropdown-item {{Request::is("/") ? "active" : " "}}" href="/">Home</a>
 						@if(Auth::user()->admin)
-							<a class="dropdown-item" href="#">Páginas</a>
+							<a class="dropdown-item {{Request::is("cria-pagina") ? "active" : " "}}" href="/cria-pagina">Páginas</a>
 						@endif
 						<a class="dropdown-item {{Request::is("perfil") ? "active" : " " }}" href="/perfil">Meu perfil</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"
@@ -70,7 +70,7 @@
 			</div>
 			<div class="jumbotron jumbotron-fluid mb-0 py-4 text-center bg-dark">
 				<div class="container text-white">
-					<h4 class="display-7">UDOIS</h1>
+					<h4 class="display-7">UDOIS</h4>
 					<p>CNPJ: 07.960.232/0001-30</p>
 				</div>
 			</div>
