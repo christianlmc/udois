@@ -22,8 +22,13 @@ Route::group(['as'=>'navbar-custom-name', 'middleware'=>'auth'], function(){
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/perfil','UsuarioController@index')->name('perfil');
 	Route::put('/perfil','UsuarioController@atualizarPerfil')->name('perfil');
-	Route::get('/cria-pagina', 'PaginaController@index')->name('cria página')->middleware('admin');
+
+	Route::group(['middleware'=>'admin'], function(){
+		Route::get('/cria-pagina', 'PaginaController@index')->name('cria página');
+		Route::post('/cria-pagina', 'PaginaController@create');
+	});
 });
 
 
-Route::get('storage/{folder}/{filename}','ArquivoController@showProfiles')->middleware('auth');
+Route::get('storage/banners/{filename}','ArquivoController@showBanner');
+Route::get('storage/profiles/{filename}','ArquivoController@showProfile')->middleware('auth');

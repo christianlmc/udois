@@ -4,7 +4,7 @@ namespace Udois;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Paginas extends Model
+class Pagina extends Model
 {
     /**
      * The attributes that are mass assignable.

@@ -26,7 +26,7 @@ class UsuarioController extends Controller
     	$foto = $request->input('foto_perfil');
 
     	if($foto){
-    		list($type, $foto) = explode(';', $foto);
+    		list(, $foto) = explode(';', $foto);
     		list(, $foto) = explode(',', $foto);
 	    	
 	    	if(base64_encode(base64_decode($foto)) === $foto){	//Verifica se a foto esta no formato correto

@@ -7,18 +7,23 @@ use Storage;
 
 class ArquivoController extends Controller
 {
-	public function __construct()
+    public function showProfile($filename)
     {
-        $this->middleware('auth');
-    }
-
-    public function showProfiles($folder, $filename)
-    {
-    	if(Storage::exists('public/'. $folder . '/' . $filename)){
-        	return response()->file(Storage_path('app/public/'. $folder . '/' .$filename));
+    	if(Storage::exists('public/profiles/' . $filename)){
+        	return response()->file(Storage_path('app/public/profiles/' .$filename));
 		}
 		else{
 			return "Esse arquivo não existe ou foi deletado";
+        }
+    }
+
+    public function showBanner($filename)
+    {
+        if(Storage::exists('public/banners/' . $filename)){
+            return response()->file(Storage_path('app/public/banners/' .$filename));
+        }
+        else{
+            return "Esse arquivo não existe ou foi deletado";
         }
     }
 }
