@@ -23,7 +23,7 @@
 
 		<nav class="navbar navbar-dark bg-dark pb-1">
 			@if(starts_with(Request::route()->getName(), "navbar-custom-name"))
-				<h3 class="navbar-brand udois text-udois-blue">{{title_case(str_after(Request::route()->getName(), "navbar-custom-name"))}}</h3></p>
+				<h3 class="navbar-brand udois text-udois-blue">{{title_case(str_after(Request::route()->getName(), "navbar-custom-name"))}}</h3>
 			@else			
 				<a class="navbar-brand udois text-udois-blue" href="/"><h3>UDOIS</h3></a>
 			@endif

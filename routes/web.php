@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'WelcomeController@index');
 
 Auth::routes();
 
@@ -31,4 +29,4 @@ Route::group(['as'=>'navbar-custom-name', 'middleware'=>'auth'], function(){
 
 
 Route::get('storage/banners/{filename}','ArquivoController@showBanner');
-Route::get('storage/profiles/{filename}','ArquivoController@showProfile')->middleware('auth');
+Route::get('storage/profiles/{filename}','ArquivoController@showProfile');

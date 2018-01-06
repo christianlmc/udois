@@ -18,7 +18,7 @@ class PaginaController extends Controller
 	    	'titulo' 			=> 'required',
 			'frase_principal'	=> 'required',
 			'url'				=> 'unique:paginas|required|alpha_dash',
-			'foto_banner'		=> 'required|image',
+			'foto_banner'		=> 'required|image|max:20000',
 	    ]);
 
     	$foto = $request->file('foto_banner');

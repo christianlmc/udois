@@ -26,8 +26,7 @@ class UsuarioController extends Controller
     	$foto = $request->input('foto_perfil');
 
     	if($foto){
-    		list(, $foto) = explode(';', $foto);
-    		list(, $foto) = explode(',', $foto);
+    		$foto = explode(',', $foto)[1]; //Remove o cabecalho da foto para upload
 	    	
 	    	if(base64_encode(base64_decode($foto)) === $foto){	//Verifica se a foto esta no formato correto
 	    		$foto = base64_decode($foto);
