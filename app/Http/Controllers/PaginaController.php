@@ -41,7 +41,7 @@ class PaginaController extends Controller
         $request->validate([
             'titulo'            => 'sometimes|required',
             'frase_principal'   => 'sometimes|required',
-            'url'               => 'sometimes|unique:paginas|required|alpha_dash',
+            'url'               => 'sometimes|required|unique:paginas|alpha_dash',
             'foto_banner'       => 'sometimes|required|image|max:10000',
         ]);
 
@@ -56,9 +56,12 @@ class PaginaController extends Controller
 
             $request = $request->except('foto_banner');
             $request['foto_banner'] = $nome_foto;
+            $pagina->update($request);
+        }
+        else{
+            $pagina->update($request->all());   
         }
 
-        $pagina->update($request);
 
         return back()->with('status', 'Página Atualizada!');
     }
