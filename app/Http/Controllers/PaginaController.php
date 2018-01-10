@@ -3,13 +3,26 @@
 namespace Udois\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Udois\Pagina;
+use Udois\Usuario;
 use Illuminate\Support\Facades\Storage;
 
 class PaginaController extends Controller
 {
     public function index(){
     	return view('cria-pagina');
+    }
+
+    public function single($url){
+        $pagina = Pagina::where('url', $url)->first();
+        $admin = Usuario::where('admin', true)->first();
+
+
+        if($pagina)
+            return view('pagina', compact('pagina', 'admin'));
+        else
+            return abort(404);
     }
 
     public function list(){

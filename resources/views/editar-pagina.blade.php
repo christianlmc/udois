@@ -168,19 +168,19 @@ $('#edit-page').on('show.bs.modal', function (event) {
 		type: "GET",
 		url: 'lista-pagina/' + page_id,
 		success: function (data) {
-			$(this).find("input").prop("disabled", true)
-			$(this).find("input[name='_method']").prop("disabled", false)
-			$(this).find("input[name='_token']").prop("disabled", false)
-			$(this).find("input[name='id']").prop("disabled", false)
-			$(this).find("#upload-button").prop('disabled', true);
-			$(this).find('#upload-button').text('Upload Banner');
-			$(this).find("input[name='id']").val(data.id)
-			$(this).find("input[name='titulo']").val(data.titulo)
-			$(this).find("input[name='frase_principal']").val(data.frase_principal)
-			$(this).find("input[name='frase_2']").val(data.frase_2)
-			$(this).find("input[name='frase_3']").val(data.frase_3)
-			$(this).find("input[name='frase_4']").val(data.frase_4)
-			$(this).find("input[name='url']").val(data.url)	
+			$("#form").find("input").prop("disabled", true)
+			$("#form").find("input[name='_method']").prop("disabled", false)
+			$("#form").find("input[name='_token']").prop("disabled", false)
+			$("#form").find("input[name='id']").prop("disabled", false)
+			$("#upload-button").prop('disabled', true);
+			$('#upload-button').text('Upload Banner');
+			$("input[name='id']").val(data.id)
+			$("input[name='titulo']").val(data.titulo)
+			$("input[name='frase_principal']").val(data.frase_principal)
+			$("input[name='frase_2']").val(data.frase_2)
+			$("input[name='frase_3']").val(data.frase_3)
+			$("input[name='frase_4']").val(data.frase_4)
+			$("input[name='url']").val(data.url)	
 		},
 		error: function (data) {
 			alert("Por favor, tente novamente mais tarde");

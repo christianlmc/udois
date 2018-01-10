@@ -31,6 +31,6 @@ Route::group(['as'=>'navbar-custom-name', 'middleware'=>'auth'], function(){
 	});
 });
 
-
+Route::get('/pagina/{url}', 'PaginaController@single');
 Route::get('storage/banners/{filename}','ArquivoController@showBanner');
 Route::get('storage/profiles/{filename}','ArquivoController@showProfile');
