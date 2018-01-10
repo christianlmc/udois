@@ -45,7 +45,20 @@ class PaginaController extends Controller
             'foto_banner'       => 'sometimes|required|image|max:10000',
         ]);
 
-        $pagina->update($request->all());
+        if($request->foto_banner){
+            Storage::delete('public/banners/' . $pagina->foto_banner);
+            $foto = $request->file('foto_banner');
+            $nome_foto = 'banner_' . time() . '.png';
+
+            Storage::putFileAs(
+                'public/banners', $request->file('foto_banner'), $nome_foto
+            );
+
+            $request = $request->except('foto_banner');
+            $request['foto_banner'] = $nome_foto;
+        }
+
+        $pagina->update($request);
 
         return back()->with('status', 'Página Atualizada!');
     }
