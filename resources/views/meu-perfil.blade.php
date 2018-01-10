@@ -16,11 +16,11 @@
 				    </div>
 				</div>
 			@endif
-			{!! Form::open(array('url' => '/perfil', 'method' => 'put', 'id' => 'login-form', 'files' => true)) !!}
+			{!! Form::open(array('url' => '/perfil', 'method' => 'put', 'id' => 'form', 'files' => true)) !!}
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4 text-center">
 						<div class="form-group">
-							<a href="javascript:void(0)" data-toggle="modal" data-target="#change-profile-pic">
+							<a href="#" data-toggle="modal" data-target="#change-profile-pic">
 								<img id="profile-pic" class="align-self-center rounded-circle img-fluid img-thumbnail" width="200px" src="{{ Auth::user()->foto_perfil ? Storage::url('profiles/' . Auth::user()->foto_perfil) : asset('user.png')}}">
 							</a>
 						</div>
@@ -29,7 +29,7 @@
 
 				<input type="file" id="upload"  value="Selecione uma imagem" accept="image/*" hidden>
 
-				<input type="text" id="photo-file" name="foto_perfil" value="" hidden>
+				<input type="text" id="photo-file" name="foto_perfil" value="" hidden disabled>
 				
 				<div class="row justify-content-center">
 					<div class="col-8 col-md-3">
@@ -97,7 +97,6 @@ $('#change-profile-pic').on('shown.bs.modal', function (e) {
 	    viewport: { width: 250, height: 250,type: 'circle' },
 	    boundary: { width: 300, height: 300 },
 	    url: $('#profile-pic').attr('src'),
-
 	});
 
 	$('#upload-photo').show();
@@ -109,9 +108,18 @@ $('#change-profile-pic').on('shown.bs.modal', function (e) {
 			$("#photo-file").attr('value', resp);
 		});
 	});
-
 });
 
+$("#form").submit(function(event){
+    var file = $('#photo-file').val();
+	if (!file){
+		$(this).submit();
+	}
+	else{
+		$('input[name="foto_perfil"]').prop("disabled", false);
+		$(this).submit();
+	}
+});
 
 $('#change-profile-pic').on('hidden.bs.modal', function (e) {
 	$("#edit-profile").empty();

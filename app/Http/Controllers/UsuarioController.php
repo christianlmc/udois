@@ -16,7 +16,7 @@ class UsuarioController extends Controller
     	return view('meu-perfil');
     }
 
-    public function atualizarPerfil(Request $request)
+    public function update(Request $request)
     {
     	$request->validate([
 	    	'nome' => 'sometimes|required',
@@ -24,6 +24,7 @@ class UsuarioController extends Controller
 	    ]);
 
     	$foto = $request->input('foto_perfil');
+    	$usuario = Auth::user();
 
     	if($foto){
     		$foto = explode(',', $foto)[1]; //Remove o cabecalho da foto para upload
@@ -32,6 +33,7 @@ class UsuarioController extends Controller
 	    		$foto = base64_decode($foto);
 	    		$nome_foto = 'profile_' . Auth::id() . time() . '.png';
 	    		Storage::put('public/profiles/' . $nome_foto, $foto);
+	    		Storage::delete('public/profiles/' . $usuario->foto_perfil);
 	    		$request->merge(['foto_perfil' => $nome_foto]);
 	    	}
 	    	else{
@@ -42,7 +44,8 @@ class UsuarioController extends Controller
 	    if ($request->input('senha')) {
 	    	$request->merge(['senha' => Hash::make($request->input('senha'))]);
 	    }
-	    Auth::user()->update($request->all());
+
+	    $usuario->update($request->all());
 	    
 	    return back()->with('status', 'Perfil Atualizado!');
 	}
