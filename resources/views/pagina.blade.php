@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', $pagina->titulo)
+
 @section('content')
 	<div class="bg-image-full" style="background-image: url({{ Storage::url('banners/' . $pagina->foto_banner) }}); height: 90vh">
 		<div class="container-fluid h-100">
