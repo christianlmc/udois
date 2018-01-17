@@ -173,7 +173,7 @@ return [
          */
         Udois\Providers\AppServiceProvider::class,
         Udois\Providers\AuthServiceProvider::class,
-        // Udois\Providers\BroadcastServiceProvider::class,
+        Udois\Providers\BroadcastServiceProvider::class,
         Udois\Providers\EventServiceProvider::class,
         Udois\Providers\RouteServiceProvider::class,
 

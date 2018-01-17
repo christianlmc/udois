@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('navbar-name', 'Perfil')
+
 @section('content')
 <script src="{{ mix('js/croppie.js') }}"></script>
 <link href="{{ asset('css/croppie.css') }}" rel="stylesheet">
@@ -89,7 +91,9 @@
 		</div>
 	</div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
 $('#change-profile-pic').on('shown.bs.modal', function (e) {
 	$("#edit-profile").empty();

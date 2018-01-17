@@ -5,6 +5,7 @@ namespace Udois;
 use Illuminate\Database\Eloquent\Model;
 
 use Udois\Usuario;
+use Udois\Sala;
 
 class Membro extends Model
 {
@@ -29,5 +30,10 @@ class Membro extends Model
     public function usuario()
     {
         return $this->belongsTo(Usuario::class);
+    }
+
+    public function sala()
+    {
+        return $this->belongsTo(Sala::class);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Udois\Sala;
 use Udois\Membro;
 use Auth;
+use Storage;
 
 class HomeController extends Controller
 {
@@ -27,18 +28,27 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $usuario = Auth::user();
+        //Pega as Salas e os Membros das Salas em que o usuario esta
+        $salas = Auth::user()->salas()->with('usuarios')->get();
 
-        foreach ($usuario->salas as $sala) {
-            if($sala->grupo == false){
-                $pessoa = Membro::where("usuario_id", '<>', Auth::user()->id)->where('sala_id', $sala->id)->first();
-                $sala->foto_sala = $pessoa->usuario->foto_perfil;
-                $sala->nome = $pessoa->usuario->nome;
-                $sala->descricao = $pessoa->usuario->email;
+        foreach ($salas as $sala) {
+            if ($sala->grupo == false) {
+                //Pega o outro usuario pertencente a sala
+                $usuario = $sala->usuarios->where('id', '<>', Auth::id())->first();
+
+                //Seta os atributos do usuario como se fosse uma sala
+                if($usuario->foto_perfil) 
+                    $sala->foto_sala = Storage::url('profiles/' . $usuario->foto_perfil);
+                else
+                    $sala->foto_sala = asset('user.png');
+                $sala->nome = $usuario->nome;
+                $sala->descricao = $usuario->email;
+            }
+            else{
+                //Modifica o atributo foto_sala para conseguir puxar a foto armazenada
+                $sala->foto_sala = Storage::url('profiles/' . $sala->foto_sala);
             }
         }
-
-        $salas = $usuario->salas;
 
         return view('home', compact('salas'));
     }

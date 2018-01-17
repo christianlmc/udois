@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('navbar-name', 'Lista Página')
+
 @section('content')
 
 @if (session('status'))
@@ -146,7 +148,9 @@
 		</div>
 	</div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
 $('.enable-btn').click(function (){
 	$(this).prev().find(':input').prop("disabled", false);

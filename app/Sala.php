@@ -4,6 +4,9 @@ namespace Udois;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Udois\Membro;
+use Udois\Usuario;
+
 class Sala extends Model
 {
     /**
@@ -23,4 +26,13 @@ class Sala extends Model
     protected $hidden = [
         // 
     ];
+
+    public function membros(){
+        return $this->hasMany(Membro::class);
+    }
+
+    public function usuarios()
+    {
+        return $this->belongsToMany(Usuario::class, 'membros', 'sala_id', 'usuario_id');
+    }
 }

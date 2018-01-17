@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('navbar-name', 'Cria Página')
+
 @section('content')
 <div class="container">
 	<div class="card border-0">
@@ -93,6 +95,9 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+@section('scripts')
 <script>
 $('#upload').change(function() {
 	var file = $('#upload')[0].files[0];

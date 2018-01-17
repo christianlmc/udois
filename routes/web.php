@@ -16,14 +16,14 @@ Route::get('/', 'WelcomeController@index');
 Auth::routes();
 
 
-Route::group(['as'=>'navbar-custom-name', 'middleware'=>'auth'], function(){
+Route::group(['middleware'=>'auth'], function(){
 	Route::get('/home', 'HomeController@index')->name('home');
-	Route::get('/perfil','UsuarioController@index')->name('perfil');
-	Route::put('/perfil','UsuarioController@update')->name('perfil');
+	Route::get('/perfil','UsuarioController@index');
+	Route::put('/perfil','UsuarioController@update');
 
 	Route::group(['middleware'=>'admin'], function(){
-		Route::get('/cria-pagina', 'PaginaController@index')->name('cria página');
-		Route::get('/lista-pagina', 'PaginaController@list')->name('lista página');
+		Route::get('/cria-pagina', 'PaginaController@index');
+		Route::get('/lista-pagina', 'PaginaController@list');
 		Route::get('/lista-pagina/{id}', 'PaginaController@get');
 		Route::post('/cria-pagina', 'PaginaController@create');
 		Route::put('/lista-pagina', 'PaginaController@edit');
