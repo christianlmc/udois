@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Udois\Membro;
 use Udois\Usuario;
+use Udois\Mensagem;
 
 class Sala extends Model
 {
@@ -34,5 +35,10 @@ class Sala extends Model
     public function usuarios()
     {
         return $this->belongsToMany(Usuario::class, 'membros', 'sala_id', 'usuario_id');
+    }
+
+    public function mensagens()
+    {
+        return $this->hasManyThrough(Mensagem::class, Membro::class);
     }
 }

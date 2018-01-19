@@ -21,6 +21,8 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::get('/perfil','UsuarioController@index');
 	Route::put('/perfil','UsuarioController@update');
 
+	Route::get('/sala/{id}', 'MensagemController@index');
+
 	Route::group(['middleware'=>'admin'], function(){
 		Route::get('/cria-pagina', 'PaginaController@index');
 		Route::get('/lista-pagina', 'PaginaController@list');

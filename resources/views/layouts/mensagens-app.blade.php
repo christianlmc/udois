@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" class="h-100">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,25 +16,21 @@
 		<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 		<link href="{{ asset('css/udois.css') }}" rel="stylesheet">
 	</head>
-	<body>
+	<body style="min-height: 100%">
 		<!-- Scripts -->
 		<script src="{{ mix('js/app.js') }}"></script>
 		<script src="{{ mix('js/popper.js') }}"></script>
 		<script src="{{ mix('js/bootstrap.js') }}"></script>
-		<nav class="navbar navbar-dark bg-dark pb-1">
-			@hasSection('navbar-name')
-				<h3 class="navbar-brand udois text-udois-blue">@yield('navbar-name')</h3>
-			@else			
-				<a class="navbar-brand udois text-udois-blue" href="/">
-					<h3>UDOIS</h3>
-				</a>
-			@endif
+		<nav class="navbar navbar-dark bg-dark pb-1 sticky-top">		
+			<nav class="navbar-brand udois text-udois-blue">
+				<h3>
+					<a href="/home">
+						<span class="oi oi-chevron-left"></span>
+					</a>
+					{{$sala->nome}}
+				</h3>
+			</nav>
 			<div class="btn-group" role="group">
-				@if(!Request::is("home"))
-				<a class="btn btn-lg btn-dark text-info my-2 my-sm-0" href="/home" >
-					<span class="oi oi-chat"></span>
-				</a>
-				@endif
 				<button class="btn btn-lg btn-dark text-info my-2 my-sm-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span class="oi oi-menu"></span>
 				</button>
@@ -61,23 +57,8 @@
 				</div>
 			</div>
 		</nav>
-		<div id="app" style="min-height: 63vh">
-			@yield('content')
-		</div>
-		<footer>
-			<div class="jumbotron jumbotron-fluid mb-0 text-center bg-udois-blue">
-				<div class="container-fluid text-white">
-					<h1 class="udois display-3">UDOIS</h1>
-					<h1 class="udois display-4">+ 8.000 CLIENTES</h1>					
-				</div>
-			</div>
-			<div class="jumbotron jumbotron-fluid mb-0 py-4 text-center bg-dark">
-				<div class="container text-white">
-					<h4 class="display-7">UDOIS</h4>
-					<p>CNPJ: 07.960.232/0001-30</p>
-				</div>
-			</div>
-		</footer>
+		@yield('content')
 		@yield('scripts')
 	</body>
 </html>
+

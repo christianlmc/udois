@@ -1,5 +1,4 @@
 <template>
-
 	<div class="chat">
 		<div class="form-group m-1">
 			<input v-model="nome_chat" class="form-control mr-sm-2 col-md-3 col-12" type="search" placeholder="Procurar nome" aria-label="Search">
@@ -28,7 +27,7 @@
 	export default {
 		props: ['salas'],
 		mounted() {
-			
+
 		},
 		data: function () {
     		return {

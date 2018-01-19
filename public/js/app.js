@@ -11500,6 +11500,7 @@ window.Vue = __webpack_require__(39);
  */
 
 Vue.component('chat', __webpack_require__(40));
+Vue.component('mensagem', __webpack_require__(60));
 
 /***/ }),
 /* 14 */
@@ -47948,7 +47949,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	props: ['salas'],
@@ -48088,6 +48088,287 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(41)
+/* script */
+var __vue_script__ = __webpack_require__(61)
+/* template */
+var __vue_template__ = __webpack_require__(62)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/MensagemComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-ef9f662a", Component.options)
+  } else {
+    hotAPI.reload("data-v-ef9f662a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['sala', 'usuarios', 'mensagens', 'auth_id'],
+    mounted: function mounted() {
+        console.log('Component mounted.');
+    },
+
+    data: function data() {
+        return {
+            mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-8 col-md-5 px-0' },
+            mensagem_direita: { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7' }
+        };
+    },
+    methods: {
+        eh_usuario_local: function eh_usuario_local(usuario_id) {
+            if (this.auth_id == usuario_id) {
+                return true;
+            }
+            return false;
+        },
+        foto_usuario: function foto_usuario(usuario_id) {
+            var usuario;
+            usuario = this.usuarios.filter(function (usuario) {
+                return usuario_id == usuario.id;
+            });
+            return usuario[0].foto_perfil;
+        },
+        //Funcao que faz ele dar scroll pro fim das mensagens
+        scrollToEnd: function scrollToEnd() {
+            var mensagens = document.querySelector("#mensagens");
+            var scrollHeight = mensagens.scrollHeight;
+            mensagens.scrollTop = scrollHeight;
+        }
+    }
+});
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      {
+        staticClass: "container-fluid",
+        staticStyle: { "overflow-y": "scroll", height: "83vh" },
+        attrs: { id: "mensagens" }
+      },
+      _vm._l(_vm.mensagens, function(mensagem) {
+        return _c(
+          "div",
+          {
+            class: [
+              _vm.eh_usuario_local(mensagem.membro.usuario_id)
+                ? _vm.mensagem_direita.alinhamento
+                : _vm.mensagem_esquerda.alinhamento,
+              "my-2"
+            ]
+          },
+          [
+            _c("div", { staticClass: "media" }, [
+              _c("img", {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.eh_usuario_local(mensagem.membro.usuario_id),
+                    expression: "!eh_usuario_local(mensagem.membro.usuario_id)"
+                  }
+                ],
+                staticClass: "rounded-circle",
+                attrs: {
+                  width: "80px",
+                  src: _vm.foto_usuario(mensagem.membro.usuario_id)
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "media-body col-12" }, [
+                _c(
+                  "div",
+                  {
+                    class: [
+                      _vm.eh_usuario_local(mensagem.membro.usuario_id)
+                        ? _vm.mensagem_direita.cor
+                        : _vm.mensagem_esquerda.cor,
+                      "card"
+                    ]
+                  },
+                  [
+                    _c("div", { staticClass: "card-body" }, [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(mensagem.texto) +
+                          "\n                        "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-footer px-1 py-0" }, [
+                      _c("small", { staticClass: "text-muted" }, [
+                        _vm._v(_vm._s(mensagem.hora_enviado))
+                      ])
+                    ])
+                  ]
+                )
+              ])
+            ])
+          ]
+        )
+      })
+    ),
+    _vm._v(" "),
+    _vm._m(0)
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("footer", { staticClass: "container-fluid fixed-bottom" }, [
+      _c("div", { staticClass: "input-group my-2" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: {
+            type: "text",
+            placeholder: "Escreva uma mensagem...",
+            "aria-label": "mensagem",
+            "aria-describedby": "basic-addon1"
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group-append" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-udois-blue",
+              attrs: { type: "button" }
+            },
+            [_c("span", { staticClass: "oi oi-chat" })]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-udois-blue",
+              attrs: { type: "button" }
+            },
+            [_c("span", { staticClass: "oi oi-paperclip" })]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-udois-blue",
+              attrs: { type: "button" }
+            },
+            [_c("span", { staticClass: "oi oi-microphone" })]
+          )
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-ef9f662a", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
