@@ -15,6 +15,7 @@
                                 {{mensagem.texto}}
                             </div>
                             <div class="card-footer px-1 py-0">
+                                <span v-show="eh_usuario_local(mensagem.membro.usuario_id)" class="oi oi-check text-info"></span>
                                 <small class="text-muted">{{mensagem.hora_enviado}}</small>
                             </div>
                         </div>
@@ -39,7 +40,7 @@
     export default {
         props: ['sala', 'usuarios', 'mensagens', 'auth_id'],
         mounted() {
-            console.log('Component mounted.')
+
         },
         data: function () {
             return {
