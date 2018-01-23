@@ -2,20 +2,20 @@
     <div>
         <div id="mensagens" class="container-fluid" style="overflow-y: scroll; height: 83vh">
             <div v-for="mensagem in mensagens" 
-                :class="[eh_usuario_local(mensagem.membro.usuario_id) ? mensagem_direita.alinhamento : mensagem_esquerda.alinhamento,'my-2'] ">
+                :class="[eh_usuario_local(mensagem.usuario.id) ? mensagem_direita.alinhamento : mensagem_esquerda.alinhamento,'my-2'] ">
 
                 <div class="media">
-                    <img v-show="!eh_usuario_local(mensagem.membro.usuario_id)" 
+                    <img v-show="!eh_usuario_local(mensagem.usuario.id)" 
                         width="80px" 
-                        :src="foto_usuario(mensagem.membro.usuario_id)" 
+                        :src="foto_usuario(mensagem.usuario.id)" 
                         class="rounded-circle">
                     <div class="media-body col-12">
-                        <div :class="[eh_usuario_local(mensagem.membro.usuario_id) ? mensagem_direita.cor : mensagem_esquerda.cor,  'card']">
+                        <div :class="[eh_usuario_local(mensagem.usuario.id) ? mensagem_direita.cor : mensagem_esquerda.cor,  'card']">
                             <div class="card-body">
                                 {{mensagem.texto}}
                             </div>
                             <div class="card-footer px-1 py-0">
-                                <span v-show="eh_usuario_local(mensagem.membro.usuario_id)" class="oi oi-check text-info"></span>
+                                <span v-show="eh_usuario_local(mensagem.usuario.id)" class="oi oi-check text-info"></span>
                                 <small class="text-muted">{{mensagem.hora_enviado}}</small>
                             </div>
                         </div>

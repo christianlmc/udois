@@ -46,7 +46,10 @@ class HomeController extends Controller
             }
             else{
                 //Modifica o atributo foto_sala para conseguir puxar a foto armazenada
-                $sala->foto_sala = Storage::url('profiles/' . $sala->foto_sala);
+                if ($sala->foto_sala)
+                    $sala->foto_sala = Storage::url('profiles/' . $sala->foto_sala);
+                else
+                    $sala->foto_sala = asset('group.png');
             }
         }
 

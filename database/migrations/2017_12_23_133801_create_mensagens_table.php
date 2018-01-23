@@ -16,13 +16,20 @@ class CreateMensagensTable extends Migration
         Schema::create('mensagens', function (Blueprint $table) {
             $table->increments('id');
             $table->string('texto');
-            $table->integer('membro_id')->unsigned();
-            $table->foreign('membro_id')->references('id')->on('membros');
+
+            $table->integer('usuario_id')->unsigned();
+            $table->integer('sala_id')->unsigned();
+            $table->foreign(['usuario_id', 'sala_id'])->references(['usuario_id', 'sala_id'])->on('membros');
             $table->timestamp('hora_enviado');
             $table->timestamp('hora_visualizado')->nullable();
             $table->boolean('arquivo');
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE `udois`.`mensagens` 
+DROP PRIMARY KEY,
+ADD PRIMARY KEY (`id`, `sala_id`, `usuario_id`);");
+
     }
 
     /**

@@ -14,11 +14,13 @@ class CreateMembrosTable extends Migration
     public function up()
     {
         Schema::create('membros', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('usuario_id')->unsigned();
             $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->integer('sala_id')->unsigned();
             $table->foreign('sala_id')->references('id')->on('salas');
+
+            $table->primary(['usuario_id','sala_id']);
+
             $table->boolean('admin_sala')->default(0);
             $table->timestamps();
         });

@@ -28,10 +28,6 @@ class Sala extends Model
         // 
     ];
 
-    public function membros(){
-        return $this->hasMany(Membro::class);
-    }
-
     public function usuarios()
     {
         return $this->belongsToMany(Usuario::class, 'membros', 'sala_id', 'usuario_id');
@@ -39,6 +35,6 @@ class Sala extends Model
 
     public function mensagens()
     {
-        return $this->hasManyThrough(Mensagem::class, Membro::class)->orderBy('hora_enviado');
+        return $this->hasMany(Mensagem::class);
     }
 }

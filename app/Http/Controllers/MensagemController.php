@@ -17,7 +17,7 @@ class MensagemController extends Controller
 	{
 		//Verifica se a sala existe
 		try{
-			$sala = Sala::with('mensagens.membro')->findOrFail($id);
+			$sala = Sala::with('mensagens.usuario')->findOrFail($id);
 			$usuarios = $sala->usuarios;
 			if ($sala->grupo == false) {
 				//Define o nome da sala como o nome do usuario com quem esta conversando
@@ -29,7 +29,9 @@ class MensagemController extends Controller
 			return redirect('home');
 		}
 		foreach ($usuarios as $usuario) {
-			$usuario->foto_perfil = Storage::url('profiles/' . $usuario->foto_perfil);
+			if ($usuario->foto_perfil) {
+				$usuario->foto_perfil = Storage::url('profiles/' . $usuario->foto_perfil);
+			}
 		}
 		//Verifica se o usuario pertence a sala
 		foreach ($sala->usuarios as $usuario) {
@@ -43,26 +45,18 @@ class MensagemController extends Controller
 
 	public function create(Request $request, $sala_id)
 	{
-		$usuario = Auth::user();
-
-		try {
-			$membro = Membro::where('sala_id', $sala_id)
-							->where('usuario_id', $usuario->id)
-							->first();
-		} catch (Exception $e) {
-			
-		}
-
 		$mensagem = new Mensagem([
 			'texto' => $request->texto,
-			'id_membro'	=> $membro->id,
 			'hora_visualizado'	=> null,
 			'hora_enviado'	=> date("Y-m-d H:i:s"),
 			'arquivo'	=> false,
-			'membro_id'	=> $membro->id,
+			'sala_id'	=> $sala_id,
+			'usuario_id' => Auth::id()
 		]);
 
-		$mensagem->membro;
+		$mensagem->save();
+		$mensagem->usuario;
+
 		return $mensagem;
 	}
 }

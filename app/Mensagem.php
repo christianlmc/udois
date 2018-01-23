@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Udois\Usuario;
 use Udois\Membro;
+use Udois\Sala;
 
 class Mensagem extends Model
 {
@@ -17,7 +18,7 @@ class Mensagem extends Model
 	 * @var array
 	 */
 	protected $fillable = [
-		'texto', 'membro_id', 'hora_visualizado', 'hora_enviado', 'arquivo',
+		'texto', 'usuario_id', 'sala_id', 'hora_visualizado', 'hora_enviado', 'arquivo',
 	];
 
 	/**
@@ -29,13 +30,13 @@ class Mensagem extends Model
 		// 
 	];
 
-	public function membro()
+	public function sala()
 	{
-		return $this->belongsTo(Membro::class);
+		return $this->belongsTo(Sala::class);
 	}
 
 	public function usuario()
 	{
-		return $this->belongsTo(Usuario::class)->withPivot('usuario_id')->using(Membro::class);
+		return $this->belongsTo(Usuario::class);
 	}
 }
