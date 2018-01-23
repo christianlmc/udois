@@ -32,6 +32,9 @@ class MensagemController extends Controller
 			if ($usuario->foto_perfil) {
 				$usuario->foto_perfil = Storage::url('profiles/' . $usuario->foto_perfil);
 			}
+			else{
+				$usuario->foto_perfil = asset('user.png');
+			}
 		}
 		//Verifica se o usuario pertence a sala
 		foreach ($sala->usuarios as $usuario) {

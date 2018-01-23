@@ -21,6 +21,7 @@
 		<script src="{{ mix('js/app.js') }}"></script>
 		<script src="{{ mix('js/popper.js') }}"></script>
 		<script src="{{ mix('js/bootstrap.js') }}"></script>
+		<script src="{{ mix('js/socket.io.js') }}"></script>
 		<nav class="navbar navbar-dark bg-dark pb-1 sticky-top">		
 			<nav class="navbar-brand udois text-udois-blue">
 				<h3>

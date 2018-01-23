@@ -38,9 +38,13 @@
 
 <script>
     export default {
-        props: ['sala', 'usuarios', 'mensagens', 'auth_id'],
+        props: ['sala', 'usuarios', 'mensagens', 'auth_id', 'socket'],
         mounted() {
-
+            var self = this
+            this.socket.emit('joining', window.location.pathname);
+            this.socket.on('chat message',function(msg){
+                self.mensagens.push(msg)
+            });           
         },
         data: function () {
             return {
@@ -55,16 +59,16 @@
                 var self = this
                 
                 var mensagem = []
-                mensagem.membro = []
 
                 var url = window.location.href
+
 
                 axios.post(url, {
                         texto: this.texto
                     })
                     .then(function (response){
                         console.log(response.data)
-                        self.mensagens.push(response.data)
+                        self.socket.emit('chat message', response.data);
                     })
                     .then(function () {
                         self.scrollToEnd()
