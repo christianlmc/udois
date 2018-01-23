@@ -39,6 +39,6 @@ class Sala extends Model
 
     public function mensagens()
     {
-        return $this->hasManyThrough(Mensagem::class, Membro::class);
+        return $this->hasManyThrough(Mensagem::class, Membro::class)->orderBy('hora_enviado');
     }
 }

@@ -35,7 +35,7 @@ class Membro extends Model
 
     public function mensagens()
     {
-        return $this->hasMany(Mensagem::class);
+        return $this->hasMany(Mensagem::class)->orderBy('hora_enviado');
     }
 
     public function sala()

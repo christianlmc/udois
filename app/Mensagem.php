@@ -17,7 +17,7 @@ class Mensagem extends Model
 	 * @var array
 	 */
 	protected $fillable = [
-		'texto', 'id_membro', 'hora_visualizado', 'hora_enviado', 'arquivo',
+		'texto', 'membro_id', 'hora_visualizado', 'hora_enviado', 'arquivo',
 	];
 
 	/**

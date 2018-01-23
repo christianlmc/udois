@@ -48181,11 +48181,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
+            texto: '',
             mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-8 col-md-5 px-0' },
             mensagem_direita: { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7' }
         };
     },
     methods: {
+        enviar_mensagem: function enviar_mensagem() {
+            if (!this.texto) {
+                return;
+            }
+            var self = this;
+
+            var mensagem = [];
+            mensagem.membro = [];
+
+            var url = window.location.href;
+
+            axios.post(url, {
+                texto: this.texto
+            }).then(function (response) {
+                console.log(response.data);
+                self.mensagens.push(response.data);
+            }).then(function () {
+                self.scrollToEnd();
+            });
+            this.texto = '';
+        },
         eh_usuario_local: function eh_usuario_local(usuario_id) {
             if (this.auth_id == usuario_id) {
                 return true;
@@ -48302,23 +48324,36 @@ var render = function() {
       })
     ),
     _vm._v(" "),
-    _vm._m(0)
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("footer", { staticClass: "container-fluid fixed-bottom" }, [
+    _c("footer", { staticClass: "container-fluid fixed-bottom" }, [
       _c("div", { staticClass: "input-group my-2" }, [
         _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.texto,
+              expression: "texto"
+            }
+          ],
           staticClass: "form-control",
-          attrs: {
-            type: "text",
-            placeholder: "Escreva uma mensagem...",
-            "aria-label": "mensagem",
-            "aria-describedby": "basic-addon1"
+          attrs: { type: "text", placeholder: "Escreva uma mensagem..." },
+          domProps: { value: _vm.texto },
+          on: {
+            keyup: function($event) {
+              if (
+                !("button" in $event) &&
+                _vm._k($event.keyCode, "enter", 13, $event.key)
+              ) {
+                return null
+              }
+              _vm.enviar_mensagem()
+            },
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.texto = $event.target.value
+            }
           }
         }),
         _vm._v(" "),
@@ -48327,31 +48362,44 @@ var staticRenderFns = [
             "button",
             {
               staticClass: "btn btn-outline-udois-blue",
-              attrs: { type: "button" }
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.enviar_mensagem()
+                }
+              }
             },
             [_c("span", { staticClass: "oi oi-chat" })]
           ),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-udois-blue",
-              attrs: { type: "button" }
-            },
-            [_c("span", { staticClass: "oi oi-paperclip" })]
-          ),
+          _vm._m(0),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-udois-blue",
-              attrs: { type: "button" }
-            },
-            [_c("span", { staticClass: "oi oi-microphone" })]
-          )
+          _vm._m(1)
         ])
       ])
     ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      { staticClass: "btn btn-outline-udois-blue", attrs: { type: "button" } },
+      [_c("span", { staticClass: "oi oi-paperclip" })]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      { staticClass: "btn btn-outline-udois-blue", attrs: { type: "button" } },
+      [_c("span", { staticClass: "oi oi-microphone" })]
+    )
   }
 ]
 render._withStripped = true

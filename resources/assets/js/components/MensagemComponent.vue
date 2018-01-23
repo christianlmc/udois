@@ -25,9 +25,9 @@
         </div>
         <footer class="container-fluid fixed-bottom">
             <div class="input-group my-2">
-                <input type="text" class="form-control" placeholder="Escreva uma mensagem..." aria-label="mensagem" aria-describedby="basic-addon1">
+                <input type="text" class="form-control" placeholder="Escreva uma mensagem..." v-model="texto" @keyup.enter="enviar_mensagem()">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-udois-blue" type="button"><span class="oi oi-chat"></span></button>
+                    <button class="btn btn-outline-udois-blue" type="button" @click="enviar_mensagem()"><span class="oi oi-chat"></span></button>
                     <button class="btn btn-outline-udois-blue" type="button"><span class="oi oi-paperclip"></span></button>
                     <button class="btn btn-outline-udois-blue" type="button"><span class="oi oi-microphone"></span></button>
                 </div>
@@ -44,11 +44,34 @@
         },
         data: function () {
             return {
+                texto: '',
                 mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-8 col-md-5 px-0'},
                 mensagem_direita:  { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7'},
             }
         },
         methods: {
+            enviar_mensagem: function(){
+                if (!this.texto) { return }
+                var self = this
+                
+                var mensagem = []
+                mensagem.membro = []
+
+                var url = window.location.href
+
+                axios.post(url, {
+                        texto: this.texto
+                    })
+                    .then(function (response){
+                        console.log(response.data)
+                        self.mensagens.push(response.data)
+                    })
+                    .then(function () {
+                        self.scrollToEnd()
+                    })
+                this.texto = ''
+
+            },
             eh_usuario_local: function(usuario_id){
                 if (this.auth_id == usuario_id) {
                     return true;

@@ -5,6 +5,8 @@ namespace Udois\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Udois\Sala;
+use Udois\Mensagem;
+use Udois\Membro;
 use Auth;
 use Exception;
 use Storage;
@@ -37,5 +39,30 @@ class MensagemController extends Controller
 		}
 
 		return redirect('home');
+	}
+
+	public function create(Request $request, $sala_id)
+	{
+		$usuario = Auth::user();
+
+		try {
+			$membro = Membro::where('sala_id', $sala_id)
+							->where('usuario_id', $usuario->id)
+							->first();
+		} catch (Exception $e) {
+			
+		}
+
+		$mensagem = new Mensagem([
+			'texto' => $request->texto,
+			'id_membro'	=> $membro->id,
+			'hora_visualizado'	=> null,
+			'hora_enviado'	=> date("Y-m-d H:i:s"),
+			'arquivo'	=> false,
+			'membro_id'	=> $membro->id,
+		]);
+
+		$mensagem->membro;
+		return $mensagem;
 	}
 }
