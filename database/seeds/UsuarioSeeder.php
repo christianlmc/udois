@@ -14,13 +14,10 @@ class UsuarioSeeder extends Seeder
     public function run()
     {
     	$usuario = [
-            ['nome' => 'Christian Luis', 'email' => 'christianlmc1@gmail.com', 'senha' => Hash::make('123123'), 'admin' => false]
+            ['nome' => 'Eder', 'email' => 'eder@powermidia.net', 'senha' => Hash::make('123123'), 'admin' => true],
+            ['nome' => 'Christian Luis', 'email' => 'christianlmc1@gmail.com', 'senha' => Hash::make('123123'), 'admin' => true]
         ];
 
         Usuario::insert($usuario);
-
-        $this->call([
-	        SalaSeeder::class,
-	    ]);
     }
 }

@@ -4,5 +4,6 @@
     "/js/croppie.js": "/js/croppie.js",
     "/js/bootstrap.js": "/js/bootstrap.js",
     "/js/popper.js": "/js/popper.js",
+    "/js/socket.io.js": "/js/socket.io.js",
     "/css/croppie.css": "/css/croppie.css"
 }

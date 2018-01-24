@@ -44,6 +44,9 @@
             this.socket.emit('joining', window.location.pathname);
             this.socket.on('chat message',function(msg){
                 self.mensagens.push(msg)
+                Vue.nextTick(function () {
+                    self.scrollToEnd()
+                })
             });           
         },
         data: function () {
@@ -62,7 +65,6 @@
 
                 var url = window.location.href
 
-
                 axios.post(url, {
                         texto: this.texto
                     })
@@ -70,9 +72,7 @@
                         console.log(response.data)
                         self.socket.emit('chat message', response.data);
                     })
-                    .then(function () {
-                        self.scrollToEnd()
-                    })
+
                 this.texto = ''
 
             },

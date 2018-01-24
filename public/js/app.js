@@ -48176,8 +48176,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['sala', 'usuarios', 'mensagens', 'auth_id'],
-    mounted: function mounted() {},
+    props: ['sala', 'usuarios', 'mensagens', 'auth_id', 'socket'],
+    mounted: function mounted() {
+        var self = this;
+        this.socket.emit('joining', window.location.pathname);
+        this.socket.on('chat message', function (msg) {
+            self.mensagens.push(msg);
+            Vue.nextTick(function () {
+                self.scrollToEnd();
+            });
+        });
+    },
 
     data: function data() {
         return {
@@ -48194,7 +48203,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var self = this;
 
             var mensagem = [];
-            mensagem.membro = [];
 
             var url = window.location.href;
 
@@ -48202,10 +48210,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 texto: this.texto
             }).then(function (response) {
                 console.log(response.data);
-                self.mensagens.push(response.data);
-            }).then(function () {
-                self.scrollToEnd();
+                self.socket.emit('chat message', response.data);
             });
+
             this.texto = '';
         },
         eh_usuario_local: function eh_usuario_local(usuario_id) {
@@ -48251,7 +48258,7 @@ var render = function() {
           "div",
           {
             class: [
-              _vm.eh_usuario_local(mensagem.membro.usuario_id)
+              _vm.eh_usuario_local(mensagem.usuario.id)
                 ? _vm.mensagem_direita.alinhamento
                 : _vm.mensagem_esquerda.alinhamento,
               "my-2"
@@ -48264,14 +48271,14 @@ var render = function() {
                   {
                     name: "show",
                     rawName: "v-show",
-                    value: !_vm.eh_usuario_local(mensagem.membro.usuario_id),
-                    expression: "!eh_usuario_local(mensagem.membro.usuario_id)"
+                    value: !_vm.eh_usuario_local(mensagem.usuario.id),
+                    expression: "!eh_usuario_local(mensagem.usuario.id)"
                   }
                 ],
                 staticClass: "rounded-circle",
                 attrs: {
                   width: "80px",
-                  src: _vm.foto_usuario(mensagem.membro.usuario_id)
+                  src: _vm.foto_usuario(mensagem.usuario.id)
                 }
               }),
               _vm._v(" "),
@@ -48280,7 +48287,7 @@ var render = function() {
                   "div",
                   {
                     class: [
-                      _vm.eh_usuario_local(mensagem.membro.usuario_id)
+                      _vm.eh_usuario_local(mensagem.usuario.id)
                         ? _vm.mensagem_direita.cor
                         : _vm.mensagem_esquerda.cor,
                       "card"
@@ -48301,11 +48308,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.eh_usuario_local(
-                              mensagem.membro.usuario_id
-                            ),
-                            expression:
-                              "eh_usuario_local(mensagem.membro.usuario_id)"
+                            value: _vm.eh_usuario_local(mensagem.usuario.id),
+                            expression: "eh_usuario_local(mensagem.usuario.id)"
                           }
                         ],
                         staticClass: "oi oi-check text-info"

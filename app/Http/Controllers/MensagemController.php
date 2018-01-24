@@ -57,7 +57,7 @@ class MensagemController extends Controller
 			'usuario_id' => Auth::id()
 		]);
 
-		$mensagem->save();
+		// $mensagem->save();
 		$mensagem->usuario;
 
 		return $mensagem;

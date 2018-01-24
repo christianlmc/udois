@@ -24,14 +24,7 @@ class CreateUsuariosTable extends Migration
             $table->string('foto_perfil', 255)->nullable();
             $table->rememberToken();
             $table->timestamps();
-        });
-
-        $admin = [
-            ['nome' => 'admin', 'email' => 'eder@powermidia.net', 'senha' => Hash::make('123@Mudar'), 'admin' => true]
-        ];
-
-        Usuario::insert($admin);
-        
+        });        
     }
 
     /**

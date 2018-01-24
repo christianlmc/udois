@@ -19,9 +19,5 @@ class SalaSeeder extends Seeder
 
         Sala::insert($sala);
 
-        $this->call([
-	        MembroSeeder::class,
-	    ]);
-
     }
 }
