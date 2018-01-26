@@ -12,11 +12,15 @@
                     <div class="media-body col-12">
                         <div :class="[eh_usuario_local(mensagem.usuario.id) ? mensagem_direita.cor : mensagem_esquerda.cor,  'card']">
                             <div class="card-body">
-                                {{mensagem.texto}}
-                            </div>
-                            <div class="card-footer px-1 py-0">
-                                <span v-show="eh_usuario_local(mensagem.usuario.id)" class="oi oi-check text-info"></span>
-                                <small class="text-muted">{{mensagem.hora_enviado}}</small>
+                                <div class="card-text">{{mensagem.texto}}</div>
+                                <div class="card-text">
+                                    <small class="text-muted">{{mensagem.hora_enviado}}</small>
+                                    <span v-show="eh_usuario_local(mensagem.usuario.id)" 
+                                    :class="[mensagem.hora_visualizado == null ? 'text-muted' : 'text-info', 'oi oi-check']"
+                                    :title="mensagem.hora_visualizado"
+                                    >
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -25,7 +29,7 @@
         </div>
         <footer class="container-fluid fixed-bottom">
             <div class="input-group my-2">
-                <input type="text" class="form-control" placeholder="Escreva uma mensagem..." v-model="texto" @keyup.enter="enviar_mensagem()">
+                <input type="text" class="form-control" placeholder="Escreva uma mensagem..." v-model="texto" @keyup.enter="enviar_mensagem()" autofocus>
                 <div class="input-group-append">
                     <button class="btn btn-outline-udois-blue" type="button" @click="enviar_mensagem()"><span class="oi oi-chat"></span></button>
                     <button class="btn btn-outline-udois-blue" type="button"><span class="oi oi-paperclip"></span></button>
@@ -41,13 +45,26 @@
         props: ['sala', 'usuarios', 'mensagens', 'auth_id', 'socket'],
         mounted() {
             var self = this
+
+            this.scrollToEnd()
+            
             this.socket.emit('joining', window.location.pathname);
             this.socket.on('chat message',function(msg){
                 self.mensagens.push(msg)
                 Vue.nextTick(function () {
                     self.scrollToEnd()
                 })
-            });           
+            });
+
+            this.visualizar_mensagem(false, false)
+            this.socket.on('seen messages',function(datetime){
+                for(var i = 0; i < self.mensagens.length; i++){
+                    if (self.mensagens[i].hora_visualizado == null && self.mensagens[i].usuario.id == self.auth_id){
+                        console.log(self.mensagens[i])
+                        self.mensagens[i].hora_visualizado = datetime
+                    }
+                }
+            });
         },
         data: function () {
             return {
@@ -56,12 +73,54 @@
                 mensagem_direita:  { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7'},
             }
         },
+        watch: {
+            mensagens: function () {
+                var self = this
+                var mensagens_nao_lidas = false
+
+                //Verifica se ha mensagem nao lida
+                for(var i = 0; i < self.mensagens.length; i++){
+                    if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null){
+                        mensagens_nao_lidas = true
+                        break
+                    }
+                }
+
+                if(mensagens_nao_lidas == false)
+                    return
+                else{
+                    this.visualizar_mensagem(true, true)
+                }
+            }
+        },
         methods: {
+            visualizar_mensagem: function (filtrado, mensagens_nao_lidas) {
+                var url = window.location.href
+                var self = this
+
+                if (filtrado == false) {
+                    for(var i = 0; i < self.mensagens.length; i++){
+                        console.log(self.mensagens[i])
+                        if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null){
+                            mensagens_nao_lidas = true
+                            break
+                        }
+                    }
+                }
+
+                console.log(mensagens_nao_lidas)
+
+                if(mensagens_nao_lidas == true){
+                    axios.put(url)
+                        .then(function (response){
+                            console.log(response.data)
+                            self.socket.emit('seen messages', response.data[0].hora_visualizado);
+                        })
+                }
+            },
             enviar_mensagem: function(){
                 if (!this.texto) { return }
                 var self = this
-                
-                var mensagem = []
 
                 var url = window.location.href
 
@@ -69,7 +128,7 @@
                         texto: this.texto
                     })
                     .then(function (response){
-                        console.log(response.data)
+                        // console.log(response.data)
                         self.socket.emit('chat message', response.data);
                     })
 

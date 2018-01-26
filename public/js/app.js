@@ -48174,17 +48174,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['sala', 'usuarios', 'mensagens', 'auth_id', 'socket'],
     mounted: function mounted() {
         var self = this;
+
+        this.scrollToEnd();
+
         this.socket.emit('joining', window.location.pathname);
         this.socket.on('chat message', function (msg) {
             self.mensagens.push(msg);
             Vue.nextTick(function () {
                 self.scrollToEnd();
             });
+        });
+
+        this.visualizar_mensagem(false, false);
+        this.socket.on('seen messages', function (datetime) {
+            for (var i = 0; i < self.mensagens.length; i++) {
+                if (self.mensagens[i].hora_visualizado == null && self.mensagens[i].usuario.id == self.auth_id) {
+                    console.log(self.mensagens[i]);
+                    self.mensagens[i].hora_visualizado = datetime;
+                }
+            }
         });
     },
 
@@ -48195,21 +48212,60 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             mensagem_direita: { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7' }
         };
     },
+    watch: {
+        mensagens: function mensagens() {
+            var self = this;
+            var mensagens_nao_lidas = false;
+
+            //Verifica se ha mensagem nao lida
+            for (var i = 0; i < self.mensagens.length; i++) {
+                if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null) {
+                    mensagens_nao_lidas = true;
+                    break;
+                }
+            }
+
+            if (mensagens_nao_lidas == false) return;else {
+                this.visualizar_mensagem(true, true);
+            }
+        }
+    },
     methods: {
+        visualizar_mensagem: function visualizar_mensagem(filtrado, mensagens_nao_lidas) {
+            var url = window.location.href;
+            var self = this;
+
+            if (filtrado == false) {
+                for (var i = 0; i < self.mensagens.length; i++) {
+                    console.log(self.mensagens[i]);
+                    if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null) {
+                        mensagens_nao_lidas = true;
+                        break;
+                    }
+                }
+            }
+
+            console.log(mensagens_nao_lidas);
+
+            if (mensagens_nao_lidas == true) {
+                axios.put(url).then(function (response) {
+                    console.log(response.data);
+                    self.socket.emit('seen messages', response.data[0].hora_visualizado);
+                });
+            }
+        },
         enviar_mensagem: function enviar_mensagem() {
             if (!this.texto) {
                 return;
             }
             var self = this;
 
-            var mensagem = [];
-
             var url = window.location.href;
 
             axios.post(url, {
                 texto: this.texto
             }).then(function (response) {
-                console.log(response.data);
+                // console.log(response.data)
                 self.socket.emit('chat message', response.data);
             });
 
@@ -48295,28 +48351,33 @@ var render = function() {
                   },
                   [
                     _c("div", { staticClass: "card-body" }, [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(mensagem.texto) +
-                          "\n                        "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "card-footer px-1 py-0" }, [
-                      _c("span", {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.eh_usuario_local(mensagem.usuario.id),
-                            expression: "eh_usuario_local(mensagem.usuario.id)"
-                          }
-                        ],
-                        staticClass: "oi oi-check text-info"
-                      }),
+                      _c("div", { staticClass: "card-text" }, [
+                        _vm._v(_vm._s(mensagem.texto))
+                      ]),
                       _vm._v(" "),
-                      _c("small", { staticClass: "text-muted" }, [
-                        _vm._v(_vm._s(mensagem.hora_enviado))
+                      _c("div", { staticClass: "card-text" }, [
+                        _c("small", { staticClass: "text-muted" }, [
+                          _vm._v(_vm._s(mensagem.hora_enviado))
+                        ]),
+                        _vm._v(" "),
+                        _c("span", {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.eh_usuario_local(mensagem.usuario.id),
+                              expression:
+                                "eh_usuario_local(mensagem.usuario.id)"
+                            }
+                          ],
+                          class: [
+                            mensagem.hora_visualizado == null
+                              ? "text-muted"
+                              : "text-info",
+                            "oi oi-check"
+                          ],
+                          attrs: { title: mensagem.hora_visualizado }
+                        })
                       ])
                     ])
                   ]
@@ -48340,7 +48401,11 @@ var render = function() {
             }
           ],
           staticClass: "form-control",
-          attrs: { type: "text", placeholder: "Escreva uma mensagem..." },
+          attrs: {
+            type: "text",
+            placeholder: "Escreva uma mensagem...",
+            autofocus: ""
+          },
           domProps: { value: _vm.texto },
           on: {
             keyup: function($event) {

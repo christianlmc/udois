@@ -36,6 +36,13 @@ class MensagemController extends Controller
 				$usuario->foto_perfil = asset('user.png');
 			}
 		}
+
+		foreach ($mensagens as $mensagem) {
+			$mensagem->hora_enviado = date('d/m/Y H:i', strtotime($mensagem->hora_enviado));
+			if ($mensagem->hora_visualizado != null) {
+				$mensagem->hora_visualizado = date('d/m/Y H:i', strtotime($mensagem->hora_visualizado));
+			}
+		}
 		//Verifica se o usuario pertence a sala
 		foreach ($sala->usuarios as $usuario) {
 			if ($usuario->id == Auth::id()) {
@@ -57,9 +64,35 @@ class MensagemController extends Controller
 			'usuario_id' => Auth::id()
 		]);
 
-		// $mensagem->save();
+		$mensagem->save();
+
+		$mensagem->hora_enviado = date('d/m/Y H:i', strtotime($mensagem->hora_enviado));
+
 		$mensagem->usuario;
 
 		return $mensagem;
+	}
+
+	public function update($sala_id)
+	{
+		
+		$hora_visualizado = date("Y-m-d H:i:s");
+									
+		Mensagem::where('hora_visualizado', null)
+							->where('sala_id', $sala_id)
+							->where('usuario_id', '<>', Auth::id())
+							->update(['hora_visualizado' => $hora_visualizado]);
+
+		$mensagens = Mensagem::where('sala_id', $sala_id)
+							->where('usuario_id', '<>', Auth::id())
+							->where('hora_visualizado', $hora_visualizado)
+							->get();
+
+		foreach ($mensagens as $mensagem) {
+			$mensagem->hora_enviado = date('d/m/Y H:i', strtotime($mensagem->hora_enviado));
+			$mensagem->hora_visualizado = date('d/m/Y H:i', strtotime($mensagem->hora_visualizado));
+		}
+
+		return $mensagens;		
 	}
 }

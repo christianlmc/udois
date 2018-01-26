@@ -33,7 +33,10 @@ class UsuarioController extends Controller
 	    		$foto = base64_decode($foto);
 	    		$nome_foto = 'profile_' . Auth::id() . time() . '.png';
 	    		Storage::put('public/profiles/' . $nome_foto, $foto);
-	    		Storage::delete('public/profiles/' . $usuario->foto_perfil);
+	    		
+	    		if($usuario->foto_perfil) 
+	    			Storage::delete('public/profiles/' . $usuario->foto_perfil);
+	    		
 	    		$request->merge(['foto_perfil' => $nome_foto]);
 	    	}
 	    	else{

@@ -8,7 +8,7 @@
 				<h2 id="title">Fazer Login</h2>
 			</div>
 			<div class="row">
-				<div class="col-sm col-md-4 offset-md-4">
+				<div class="col-sm col-lg-4 offset-lg-4">
 					<div class="row font-weight-bold">
 						<div class="col-6">
 							<a href="javascript:void(0)" class="button-register text-udois-blue">Fazer cadastro</a>
@@ -21,7 +21,7 @@
 			</div>
 			{!! Form::open(array('url' => '/login', 'id' => 'login-form')) !!}
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-sm col-lg-4">
 						<div class="form-group">
 							<input type="email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" aria-describedby="email" placeholder="Email" value="{{ $errors->has('email') ? old('email') : '' }}" required>
 							<div class="invalid-feedback">
@@ -31,7 +31,7 @@
 					</div>
 				</div>
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-sm col-lg-4">
 						<div class="form-group">
 							<input type="password" class="form-control" name="senha" placeholder="Senha" required>
 						</div>
@@ -43,7 +43,7 @@
 			{!! Form::close() !!}
 			{!! Form::open(array('url' => '/register', 'id' => 'register-form')) !!}
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-sm col-lg-4">
 						<div class="form-group">
 							<input type="text" class="form-control {{ $errors->register->has('nome') ? ' is-invalid' : '' }}" name="nome" aria-describedby="nome" placeholder="Nome" value="{{ old('nome') }}" required>
 							<div class="invalid-feedback">
@@ -53,7 +53,7 @@
 					</div>
 				</div>
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-sm col-lg-4">
 						<div class="form-group">
 							<input type="email" class="form-control {{ $errors->register->has('email') ? ' is-invalid' : '' }}" name="email" aria-describedby="email" placeholder="Email" value="{{ $errors->register->has('email') ? old('email') : '' }}" required>
 							<div class="invalid-feedback">
@@ -63,7 +63,7 @@
 					</div>
 				</div>
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-sm col-lg-4">
 						<div class="form-group">
 							<input type="password" class="form-control {{ $errors->register->has('senha') ? ' is-invalid' : '' }}" name="senha" placeholder="Senha" required>
 							<div class="invalid-feedback">
@@ -73,7 +73,7 @@
 					</div>
 				</div>
 				<div class="row justify-content-center">
-					<div class="col-sm col-md-4">
+					<div class="col-sm col-lg-4">
 						<div class="form-group">
 							<input type="password" class="form-control" name="senha_confirmation" placeholder="Confirmar Senha" required>
 						</div>
