@@ -13,17 +13,21 @@ use Storage;
 
 class MensagemController extends Controller
 {
-	public function index($id)
+	public function index($sala_id)
 	{
 		//Verifica se a sala existe
 		try{
-			$sala = Sala::with('mensagens.usuario')->findOrFail($id);
+			$sala = Sala::with(['mensagens' => function ($query){
+				$query->orderBy('created_at', 'desc')->take(50);
+			}, 'mensagens.usuario'])->findOrFail($sala_id);
+
 			$usuarios = $sala->usuarios;
 			if ($sala->grupo == false) {
 				//Define o nome da sala como o nome do usuario com quem esta conversando
 				$sala->nome = $usuarios->where('id', '<>', Auth::id())->first()->nome;
 			}
-			$mensagens = $sala->mensagens;
+			//Ordena as mensagens da mais antiga para a mais nova
+			$mensagens = $sala->mensagens->reverse()->values();
 		}
 		catch(Exception $e){
 			return redirect('home');
@@ -55,14 +59,23 @@ class MensagemController extends Controller
 
 	public function create(Request $request, $sala_id)
 	{
+		if ($request->file('arquivo')){
+			$nome_arquivo = 'file_' . Auth::id() . time() . '.' . $request->file('arquivo')->getClientOriginalExtension();
+			$nome_arquivo_original = $request->file('arquivo')->getClientOriginalName();
+			$pasta = 'sala_' . $sala_id . '/';
+
+			$request->file('arquivo')->storeAs($pasta, $nome_arquivo);		
+		}
+
 		$mensagem = new Mensagem([
-			'texto' => $request->texto,
+			'texto' => isset($nome_arquivo_original) ? $nome_arquivo_original : $request->texto,
 			'hora_visualizado'	=> null,
 			'hora_enviado'	=> date("Y-m-d H:i:s"),
-			'arquivo'	=> false,
+			'arquivo'	=> isset($nome_arquivo) ? $nome_arquivo : null,
 			'sala_id'	=> $sala_id,
 			'usuario_id' => Auth::id()
 		]);
+
 
 		$mensagem->save();
 
@@ -71,6 +84,24 @@ class MensagemController extends Controller
 		$mensagem->usuario;
 
 		return $mensagem;
+	}
+
+	public function loadMore($sala_id, $mensagem_id)
+	{
+		$mensagens = Mensagem::with('usuario')
+								->where('sala_id', $sala_id)
+								->where('id', '<', $mensagem_id)
+								->orderBy('created_at', 'desc')
+								->take(50)->get();
+
+		foreach ($mensagens as $mensagem) {
+			$mensagem->hora_enviado = date('d/m/Y H:i', strtotime($mensagem->hora_enviado));
+			if ($mensagem->hora_visualizado) {
+				$mensagem->hora_visualizado = date('d/m/Y H:i', strtotime($mensagem->hora_visualizado));
+			}
+		}
+
+		return $mensagens;
 	}
 
 	public function update($sala_id)

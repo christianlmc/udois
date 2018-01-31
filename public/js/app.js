@@ -48178,6 +48178,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['sala', 'usuarios', 'mensagens', 'auth_id', 'socket'],
@@ -48197,8 +48209,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.visualizar_mensagem(false, false);
         this.socket.on('seen messages', function (datetime) {
             for (var i = 0; i < self.mensagens.length; i++) {
-                if (self.mensagens[i].hora_visualizado == null && self.mensagens[i].usuario.id == self.auth_id) {
-                    console.log(self.mensagens[i]);
+                if (self.mensagens[i].hora_visualizado == null) {
+                    // console.log(self.mensagens[i])
                     self.mensagens[i].hora_visualizado = datetime;
                 }
             }
@@ -48209,7 +48221,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             texto: '',
             mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-8 col-md-5 px-0' },
-            mensagem_direita: { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7' }
+            mensagem_direita: { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7' },
+            load_more_btn: true
         };
     },
     watch: {
@@ -48220,12 +48233,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Verifica se ha mensagem nao lida
             for (var i = 0; i < self.mensagens.length; i++) {
                 if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null) {
+                    console.log(self.mensagens[i]);
                     mensagens_nao_lidas = true;
                     break;
                 }
             }
 
-            if (mensagens_nao_lidas == false) return;else {
+            if (mensagens_nao_lidas == false) {
+                return;
+            } else {
                 this.visualizar_mensagem(true, true);
             }
         }
@@ -48237,7 +48253,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             if (filtrado == false) {
                 for (var i = 0; i < self.mensagens.length; i++) {
-                    console.log(self.mensagens[i]);
+                    // console.log(self.mensagens[i])
                     if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null) {
                         mensagens_nao_lidas = true;
                         break;
@@ -48245,12 +48261,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             }
 
-            console.log(mensagens_nao_lidas);
+            // console.log(mensagens_nao_lidas)
 
             if (mensagens_nao_lidas == true) {
                 axios.put(url).then(function (response) {
-                    console.log(response.data);
-                    self.socket.emit('seen messages', response.data[0].hora_visualizado);
+                    // console.log(response.data)
+                    if (response) self.socket.emit('seen messages', response.data[0].hora_visualizado);
                 });
             }
         },
@@ -48271,18 +48287,52 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.texto = '';
         },
-        eh_usuario_local: function eh_usuario_local(usuario_id) {
-            if (this.auth_id == usuario_id) {
-                return true;
-            }
-            return false;
-        },
-        foto_usuario: function foto_usuario(usuario_id) {
-            var usuario;
-            usuario = this.usuarios.filter(function (usuario) {
-                return usuario_id == usuario.id;
+        carregar_mensagens: function carregar_mensagens() {
+            var self = this;
+
+            var url = window.location.href + '/mensagem/' + this.mensagens[0].id;
+
+            axios.get(url).then(function (response) {
+                // console.log(response.data)
+                _.forEach(response.data, function (mensagem) {
+                    self.mensagens.unshift(mensagem);
+                });
+                if (response.data.length == 0) {
+                    self.load_more_btn = false;
+                }
             });
-            return usuario[0].foto_perfil;
+        },
+        //Funcao que verifica se o usuario em questao eh o usuario local
+        eh_usuario_local: function eh_usuario_local(usuario_id) {
+            return this.auth_id == usuario_id;
+        },
+        //Funcao que permite o upload de arquivos
+        upload_btn: function upload_btn() {
+            this.$refs.upload.click();
+        },
+        file_selected: function file_selected(e) {
+            var file = e.target.files || e.dataTransfer.files;
+            if (!file.length) {
+                return;
+            }
+            this.upload_file(file[0]);
+        },
+        upload_file: function upload_file(file) {
+            // let reader = new FileReader()
+            var self = this;
+            var url = window.location.href;
+
+            var formData = new FormData();
+            formData.append('arquivo', file);
+
+            axios.post(url, formData).then(function (response) {
+                // console.log(response)
+                self.socket.emit('chat message', response.data);
+            });
+        },
+        //Funcao que retorna a foto do usuario
+        foto_usuario: function foto_usuario(usuario_id) {
+            return _.find(this.usuarios, { 'id': usuario_id }).foto_perfil;
         },
         //Funcao que faz ele dar scroll pro fim das mensagens
         scrollToEnd: function scrollToEnd() {
@@ -48309,84 +48359,138 @@ var render = function() {
         staticStyle: { "overflow-y": "scroll", height: "83vh" },
         attrs: { id: "mensagens" }
       },
-      _vm._l(_vm.mensagens, function(mensagem) {
-        return _c(
-          "div",
-          {
-            class: [
-              _vm.eh_usuario_local(mensagem.usuario.id)
-                ? _vm.mensagem_direita.alinhamento
-                : _vm.mensagem_esquerda.alinhamento,
-              "my-2"
-            ]
-          },
-          [
-            _c("div", { staticClass: "media" }, [
-              _c("img", {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: !_vm.eh_usuario_local(mensagem.usuario.id),
-                    expression: "!eh_usuario_local(mensagem.usuario.id)"
-                  }
-                ],
-                staticClass: "rounded-circle",
-                attrs: {
-                  width: "80px",
-                  src: _vm.foto_usuario(mensagem.usuario.id)
+      [
+        _c("div", { staticClass: "row justify-content-center my-2" }, [
+          _c(
+            "button",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.load_more_btn,
+                  expression: "load_more_btn"
                 }
-              }),
-              _vm._v(" "),
-              _c("div", { staticClass: "media-body col-12" }, [
-                _c(
-                  "div",
-                  {
-                    class: [
-                      _vm.eh_usuario_local(mensagem.usuario.id)
-                        ? _vm.mensagem_direita.cor
-                        : _vm.mensagem_esquerda.cor,
-                      "card"
-                    ]
-                  },
-                  [
-                    _c("div", { staticClass: "card-body" }, [
-                      _c("div", { staticClass: "card-text" }, [
-                        _vm._v(_vm._s(mensagem.texto))
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "card-text" }, [
-                        _c("small", { staticClass: "text-muted" }, [
-                          _vm._v(_vm._s(mensagem.hora_enviado))
-                        ]),
+              ],
+              staticClass: "btn badge badge-primary",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.carregar_mensagens()
+                }
+              }
+            },
+            [_vm._v("Carregar mensagens antigas")]
+          )
+        ]),
+        _vm._v(" "),
+        _vm._l(_vm.mensagens, function(mensagem) {
+          return _c(
+            "div",
+            {
+              class: [
+                _vm.eh_usuario_local(mensagem.usuario.id)
+                  ? _vm.mensagem_direita.alinhamento
+                  : _vm.mensagem_esquerda.alinhamento,
+                "my-2"
+              ]
+            },
+            [
+              _c("div", { staticClass: "media" }, [
+                _c("img", {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.eh_usuario_local(mensagem.usuario.id),
+                      expression: "!eh_usuario_local(mensagem.usuario.id)"
+                    }
+                  ],
+                  staticClass: "rounded-circle",
+                  attrs: {
+                    width: "80px",
+                    src: _vm.foto_usuario(mensagem.usuario.id)
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "media-body col-12" }, [
+                  _c(
+                    "div",
+                    {
+                      class: [
+                        _vm.eh_usuario_local(mensagem.usuario.id)
+                          ? _vm.mensagem_direita.cor
+                          : _vm.mensagem_esquerda.cor,
+                        "card"
+                      ]
+                    },
+                    [
+                      _c("div", { staticClass: "card-body" }, [
+                        !mensagem.arquivo
+                          ? _c("div", { staticClass: "card-text" }, [
+                              _vm._v(_vm._s(mensagem.texto))
+                            ])
+                          : _c("div", { staticClass: "card-text" }, [
+                              _c(
+                                "a",
+                                {
+                                  attrs: {
+                                    href:
+                                      "/storage/download/" +
+                                      _vm.sala.id +
+                                      "/" +
+                                      mensagem.arquivo
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    " +
+                                      _vm._s(mensagem.texto) +
+                                      "\n                                    "
+                                  ),
+                                  _c("span", {
+                                    staticClass: "oi oi-data-transfer-download"
+                                  })
+                                ]
+                              )
+                            ]),
                         _vm._v(" "),
-                        _c("span", {
-                          directives: [
-                            {
-                              name: "show",
-                              rawName: "v-show",
-                              value: _vm.eh_usuario_local(mensagem.usuario.id),
-                              expression:
-                                "eh_usuario_local(mensagem.usuario.id)"
-                            }
-                          ],
-                          class: [
-                            mensagem.hora_visualizado == null
-                              ? "text-muted"
-                              : "text-info",
-                            "oi oi-check"
-                          ],
-                          attrs: { title: mensagem.hora_visualizado }
-                        })
+                        _c("div", { staticClass: "card-text" }, [
+                          _c("small", { staticClass: "text-muted" }, [
+                            _vm._v(_vm._s(mensagem.hora_enviado))
+                          ]),
+                          _vm._v(" "),
+                          _c("span", {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: _vm.eh_usuario_local(
+                                  mensagem.usuario.id
+                                ),
+                                expression:
+                                  "eh_usuario_local(mensagem.usuario.id)"
+                              }
+                            ],
+                            class: [
+                              mensagem.hora_visualizado == null
+                                ? "text-muted"
+                                : "text-info",
+                              "oi oi-check"
+                            ],
+                            attrs: { title: mensagem.hora_visualizado }
+                          })
+                        ])
                       ])
-                    ])
-                  ]
-                )
+                    ]
+                  )
+                ])
               ])
-            ])
-          ]
-        )
-      })
+            ]
+          )
+        })
+      ],
+      2
     ),
     _vm._v(" "),
     _c("footer", { staticClass: "container-fluid fixed-bottom" }, [
@@ -48441,25 +48545,33 @@ var render = function() {
             [_c("span", { staticClass: "oi oi-chat" })]
           ),
           _vm._v(" "),
-          _vm._m(0),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-outline-udois-blue",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.upload_btn()
+                }
+              }
+            },
+            [_c("span", { staticClass: "oi oi-paperclip" })]
+          ),
           _vm._v(" "),
-          _vm._m(1)
+          _vm._m(0)
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c("input", {
+      ref: "upload",
+      attrs: { type: "file", hidden: "" },
+      on: { change: _vm.file_selected }
+    })
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-outline-udois-blue", attrs: { type: "button" } },
-      [_c("span", { staticClass: "oi oi-paperclip" })]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

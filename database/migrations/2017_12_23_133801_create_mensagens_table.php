@@ -22,7 +22,7 @@ class CreateMensagensTable extends Migration
             $table->foreign(['usuario_id', 'sala_id'])->references(['usuario_id', 'sala_id'])->on('membros');
             $table->timestamp('hora_enviado');
             $table->timestamp('hora_visualizado')->nullable();
-            $table->boolean('arquivo');
+            $table->string('arquivo')->nullable();
             $table->timestamps();
         });
 

@@ -26,4 +26,15 @@ class ArquivoController extends Controller
             return "Esse arquivo não existe ou foi deletado";
         }
     }
+
+    public function downloadFile($sala_id, $filename)
+    {
+        $pasta = 'sala_' . $sala_id . '/';
+        if(Storage::exists($pasta. $filename)){
+            return response()->download(Storage_path('app/'. $pasta . $filename));
+        }
+        else{
+            return "Esse arquivo não existe ou foi deletado";
+        }
+    }
 }

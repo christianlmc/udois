@@ -22,6 +22,7 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::put('/perfil','UsuarioController@update');
 
 	Route::get('/sala/{id}', 'MensagemController@index');
+	Route::get('/sala/{id}/mensagem/{mensagem_id}', 'MensagemController@loadMore');
 	Route::post('/sala/{id}', 'MensagemController@create');
 	Route::put('/sala/{id}', 'MensagemController@update');
 
@@ -38,3 +39,4 @@ Route::group(['middleware'=>'auth'], function(){
 Route::get('/pagina/{url}', 'PaginaController@single');
 Route::get('storage/banners/{filename}','ArquivoController@showBanner');
 Route::get('storage/profiles/{filename}','ArquivoController@showProfile');
+Route::get('storage/download/{sala_id}/{filename}','ArquivoController@downloadFile');
