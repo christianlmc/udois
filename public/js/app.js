@@ -48190,6 +48190,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['sala', 'usuarios', 'mensagens', 'auth_id', 'socket'],
@@ -48215,6 +48221,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             }
         });
+
+        this.inicializa_microfone();
     },
 
     data: function data() {
@@ -48222,7 +48230,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             texto: '',
             mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-8 col-md-5 px-0' },
             mensagem_direita: { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7' },
-            load_more_btn: true
+            load_more_btn: true,
+            gravando: false,
+            recorder: '',
+            audio_stream: '',
+            audio_context: ''
         };
     },
     watch: {
@@ -48339,6 +48351,84 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var mensagens = document.querySelector("#mensagens");
             var scrollHeight = mensagens.scrollHeight;
             mensagens.scrollTop = scrollHeight;
+        },
+        inicializa_microfone: function inicializa_microfone() {
+            try {
+                // Monkeypatch for AudioContext, getUserMedia and URL
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+                window.URL = window.URL || window.webkitURL;
+
+                // Store the instance of AudioContext globally
+                this.audio_context = new AudioContext();
+                console.log('Audio context is ready !');
+                console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+            } catch (e) {
+                alert('No web audio support in this browser!');
+            }
+        },
+        startRecording: function startRecording() {
+            var self = this;
+            navigator.getUserMedia({ audio: true }, function (stream) {
+                // Expose the stream to be accessible globally
+                self.audio_stream = stream;
+                // Create the MediaStreamSource for the Recorder library
+                var input = self.audio_context.createMediaStreamSource(stream);
+                console.log('Media stream succesfully created');
+
+                // Initialize the Recorder Library
+                self.recorder = new Recorder(input);
+                console.log('Recorder initialised');
+
+                // Start recording !
+                self.recorder && self.recorder.record();
+                console.log('Recording...');
+
+                // Disable Record button and enable stop button !
+                self.gravando = true;
+            }, function (e) {
+                console.error('No live audio input: ' + e);
+            });
+        },
+        stopRecording: function stopRecording() {
+            var self = this;
+            // Stop the recorder instance
+            this.recorder && this.recorder.stop();
+            console.log('Stopped recording.');
+
+            // Stop the getUserMedia Audio Stream !
+            this.audio_stream.getAudioTracks()[0].stop();
+
+            // Use the Recorder Library to export the recorder Audio as a .wav file
+            // The callback providen in the stop recording method receives the blob
+
+            /**
+             * Export the AudioBLOB using the exportWAV method.
+             * Note that this method exports too with mp3 if
+             * you provide the second argument of the function
+             */
+            this.recorder && this.recorder.exportWAV(function (blob) {
+                console.log(blob);
+                console.log(URL.createObjectURL(blob));
+
+                var url = window.location.href;
+
+                var formData = new FormData();
+
+                formData.append('audio_file', blob);
+
+                axios.post(url, formData).then(function (response) {
+                    console.log(response.data);
+                    self.socket.emit('chat message', response.data);
+                });
+
+                // create WAV download link using audio data blob
+                // createDownloadLink();
+
+                // Clear the Recorder to start again !
+                self.recorder.clear();
+            }, "audio/wav");
+            this.gravando = false;
         }
     }
 });
@@ -48426,34 +48516,53 @@ var render = function() {
                     },
                     [
                       _c("div", { staticClass: "card-body" }, [
-                        !mensagem.arquivo
+                        mensagem.arquivo == null && mensagem.audio == false
                           ? _c("div", { staticClass: "card-text" }, [
-                              _vm._v(_vm._s(mensagem.texto))
+                              _vm._v(
+                                "\n                                " +
+                                  _vm._s(mensagem.texto) +
+                                  "\n                            "
+                              )
                             ])
-                          : _c("div", { staticClass: "card-text" }, [
-                              _c(
-                                "a",
-                                {
+                          : mensagem.audio == false
+                            ? _c("div", { staticClass: "card-text" }, [
+                                _c(
+                                  "a",
+                                  {
+                                    attrs: {
+                                      href:
+                                        "/storage/download/" +
+                                        _vm.sala.id +
+                                        "/" +
+                                        mensagem.arquivo
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                    " +
+                                        _vm._s(mensagem.texto) +
+                                        "\n                                    "
+                                    ),
+                                    _c("span", {
+                                      staticClass:
+                                        "oi oi-data-transfer-download"
+                                    })
+                                  ]
+                                )
+                              ])
+                            : _c("div", { staticClass: "card-text" }, [
+                                _c("audio", {
                                   attrs: {
-                                    href:
+                                    controls: "",
+                                    controlsList: "nodownload",
+                                    src:
                                       "/storage/download/" +
                                       _vm.sala.id +
                                       "/" +
                                       mensagem.arquivo
                                   }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                    " +
-                                      _vm._s(mensagem.texto) +
-                                      "\n                                    "
-                                  ),
-                                  _c("span", {
-                                    staticClass: "oi oi-data-transfer-download"
-                                  })
-                                ]
-                              )
-                            ]),
+                                })
+                              ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "card-text" }, [
                           _c("small", { staticClass: "text-muted" }, [
@@ -48559,7 +48668,22 @@ var render = function() {
             [_c("span", { staticClass: "oi oi-paperclip" })]
           ),
           _vm._v(" "),
-          _vm._m(0)
+          _c(
+            "button",
+            {
+              class: [
+                _vm.gravando ? "btn-outline-danger" : "btn-outline-udois-blue",
+                "btn"
+              ],
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.gravando ? _vm.stopRecording() : _vm.startRecording()
+                }
+              }
+            },
+            [_c("span", { staticClass: "oi oi-microphone" })]
+          )
         ])
       ])
     ]),
@@ -48571,18 +48695,7 @@ var render = function() {
     })
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-outline-udois-blue", attrs: { type: "button" } },
-      [_c("span", { staticClass: "oi oi-microphone" })]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

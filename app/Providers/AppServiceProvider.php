@@ -4,6 +4,9 @@ namespace Udois\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use Symfony\Component\Process\Process;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +16,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $process = new Process('node server.js');
+        $process->start();
     }
 
     /**

@@ -22,6 +22,8 @@
 		<script src="{{ mix('js/popper.js') }}"></script>
 		<script src="{{ mix('js/bootstrap.js') }}"></script>
 		<script src="{{ mix('js/socket.io.js') }}"></script>
+		<script src="{{ asset('js/recorder.js') }}"></script>
+
 		<nav class="navbar navbar-dark bg-dark pb-1 sticky-top">		
 			<nav class="navbar-brand udois text-udois-blue">
 				<h3>
@@ -31,6 +33,7 @@
 					{{$sala->nome}}
 				</h3>
 			</nav>
+			
 			<div class="btn-group" role="group">
 				<button class="btn btn-lg btn-dark text-info my-2 my-sm-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<span class="oi oi-menu"></span>

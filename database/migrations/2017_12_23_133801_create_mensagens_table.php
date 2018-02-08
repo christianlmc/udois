@@ -23,6 +23,7 @@ class CreateMensagensTable extends Migration
             $table->timestamp('hora_enviado');
             $table->timestamp('hora_visualizado')->nullable();
             $table->string('arquivo')->nullable();
+            $table->boolean('audio')->default(false);
             $table->timestamps();
         });
 

@@ -17,12 +17,17 @@
                     <div class="media-body col-12">
                         <div :class="[eh_usuario_local(mensagem.usuario.id) ? mensagem_direita.cor : mensagem_esquerda.cor,  'card']">
                             <div class="card-body">
-                                <div class="card-text" v-if="!mensagem.arquivo">{{mensagem.texto}}</div>
-                                <div class="card-text" v-else>
+                                <div class="card-text" v-if="mensagem.arquivo == null && mensagem.audio == false">
+                                    {{mensagem.texto}}
+                                </div>
+                                <div class="card-text" v-else-if="mensagem.audio == false">
                                     <a :href="'/storage/download/' + sala.id + '/' + mensagem.arquivo">
                                         {{mensagem.texto}}
                                         <span class="oi oi-data-transfer-download"></span>
                                     </a>
+                                </div>
+                                <div class="card-text" v-else>
+                                    <audio controls controlsList="nodownload" :src="'/storage/download/' + sala.id + '/' + mensagem.arquivo" ></audio>
                                 </div>
                                 <div class="card-text">
                                     <small class="text-muted">{{mensagem.hora_enviado}}</small>
@@ -44,7 +49,8 @@
                 <div class="input-group-append">
                     <button class="btn btn-outline-udois-blue" type="button" @click="enviar_mensagem()"><span class="oi oi-chat"></span></button>
                     <button class="btn btn-outline-udois-blue" type="button" @click="upload_btn()"><span class="oi oi-paperclip"></span></button>
-                    <button class="btn btn-outline-udois-blue" type="button"><span class="oi oi-microphone"></span></button>
+                    <button :class="[gravando ? 'btn-outline-danger' : 'btn-outline-udois-blue', 'btn']" type="button" 
+                    @click="(gravando ? stopRecording() : startRecording())"><span class="oi oi-microphone"></span></button>
                 </div>
             </div>
         </footer>
@@ -77,6 +83,8 @@
                     }
                 }
             });
+
+            this.inicializa_microfone()
         },
         data: function () {
             return {
@@ -84,6 +92,10 @@
                 mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-8 col-md-5 px-0'},
                 mensagem_direita:  { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7'},
                 load_more_btn: true,
+                gravando: false,
+                recorder: '',
+                audio_stream: '',
+                audio_context: '',
             }
         },
         watch: {
@@ -204,7 +216,88 @@
                 let mensagens = document.querySelector("#mensagens")
                 let scrollHeight = mensagens.scrollHeight
                 mensagens.scrollTop = scrollHeight
-            }
+            },
+            inicializa_microfone: function(){
+                try {
+                    // Monkeypatch for AudioContext, getUserMedia and URL
+                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia
+                    window.URL = window.URL || window.webkitURL;
+
+                    // Store the instance of AudioContext globally
+                    this.audio_context = new AudioContext;
+                    console.log('Audio context is ready !');
+                    console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+                } 
+                catch (e) {
+                    alert('No web audio support in this browser!');
+                }
+            },
+            startRecording: function(){
+                var self = this
+                navigator.getUserMedia({ audio: true }, function (stream) {
+                    // Expose the stream to be accessible globally
+                    self.audio_stream = stream;
+                    // Create the MediaStreamSource for the Recorder library
+                    var input = self.audio_context.createMediaStreamSource(stream);
+                    console.log('Media stream succesfully created');
+
+                    // Initialize the Recorder Library
+                    self.recorder = new Recorder(input);
+                    console.log('Recorder initialised');
+
+                    // Start recording !
+                    self.recorder && self.recorder.record();
+                    console.log('Recording...');
+
+                    // Disable Record button and enable stop button !
+                    self.gravando = true
+                }, function (e) {
+                    console.error('No live audio input: ' + e);
+                });
+            },
+            stopRecording: function () {
+                var self = this
+                // Stop the recorder instance
+                this.recorder && this.recorder.stop();
+                console.log('Stopped recording.');
+
+                // Stop the getUserMedia Audio Stream !
+                this.audio_stream.getAudioTracks()[0].stop();
+
+
+                // Use the Recorder Library to export the recorder Audio as a .wav file
+                // The callback providen in the stop recording method receives the blob
+
+                /**
+                 * Export the AudioBLOB using the exportWAV method.
+                 * Note that this method exports too with mp3 if
+                 * you provide the second argument of the function
+                 */
+                this.recorder && this.recorder.exportWAV(function (blob) {
+                    console.log(blob)
+                    console.log(URL.createObjectURL(blob))
+
+                    var url = window.location.href
+
+                    const formData = new FormData()
+
+                    formData.append('audio_file', blob)
+
+                    axios.post(url,formData)
+                    .then(function (response){
+                        console.log(response.data)
+                        self.socket.emit('chat message', response.data);
+                    })
+
+                    // create WAV download link using audio data blob
+                    // createDownloadLink();
+
+                    // Clear the Recorder to start again !
+                    self.recorder.clear();
+                }, ("audio/wav"));
+                this.gravando = false
+            },
         },
     }
 </script>

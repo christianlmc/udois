@@ -21,7 +21,7 @@ class CreateMembrosTable extends Migration
 
             $table->primary(['usuario_id','sala_id']);
 
-            $table->boolean('admin_sala')->default(0);
+            $table->boolean('admin_sala')->default(false);
             $table->timestamps();
         });
     }
