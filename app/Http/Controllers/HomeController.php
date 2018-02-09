@@ -5,7 +5,7 @@ namespace Udois\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Udois\Sala;
-use Udois\Membro;
+use Udois\Usuario;
 use Auth;
 use Storage;
 
@@ -32,6 +32,7 @@ class HomeController extends Controller
         $salas = Auth::user()->salas()->with('usuarios')->get();
 
         foreach ($salas as $sala) {
+            //Se a sala não for um grupo
             if ($sala->grupo == false) {
                 //Pega o outro usuario pertencente a sala
                 $usuario = $sala->usuarios->where('id', '<>', Auth::id())->first();
@@ -51,6 +52,8 @@ class HomeController extends Controller
                 else
                     $sala->foto_sala = asset('group.png');
             }
+
+            $sala->nao_lidas = $sala->mensagens->where('hora_visualizado', null)->count();
         }
 
         return view('home', compact('salas'));

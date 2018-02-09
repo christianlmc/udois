@@ -1,7 +1,7 @@
 <template>
 	<div class="chat">
 		<div class="form-group m-1">
-			<input v-model="nome_chat" class="form-control mr-sm-2 col-md-3 col-12" type="search" placeholder="Procurar nome" aria-label="Search">
+			<input v-model="busca" class="form-control mr-sm-2 col-md-3 col-12" type="search" placeholder="Procurar nome" aria-label="Search">
 		</div>
 		<hr class="my-0">
 		<div v-for="sala in salas_filtradas">
@@ -11,9 +11,10 @@
 					<h5 class="mt-0 mb-1">{{ sala.nome }}</h5>
 					<small class="text-muted">{{ sala.descricao }}</small>
 				</div>
+				
 				<div class="m-2">
 					<a class="btn btn-primary text-white">
-						<span class="badge badge-light"></span>
+						<span class="badge badge-light" v-show="sala.nao_lidas">{{sala.nao_lidas}}</span>
 						<span class="oi oi-chat"></span>
 					</a>
 				</div>
@@ -31,28 +32,26 @@
 		},
 		data: function () {
     		return {
-				salas_array: this.salas,
-				nome_chat: ""
+				busca: ""
 			}
 		},
 		computed: {
 	        salas_filtradas: function () {
-	            var salas_array = this.salas,
-	                nome_chat = this.nome_chat;
+	            var busca = this.busca;
 
-	            if(!nome_chat){
-	                return salas_array;
+	            if(!busca){
+	                return this.salas;
 	            }
 
-	            nome_chat = nome_chat.trim().toLowerCase();
+	            busca = busca.trim().toLowerCase();
 
-	            salas_array = salas_array.filter(function(item){
-	                if(item.nome.toLowerCase().indexOf(nome_chat) !== -1 || item.descricao.toLowerCase().indexOf(nome_chat) !== -1){
-	                    return item;
-	                }
-	            })
+	            var salas_filtradas = _.filter(this.salas, function(sala) {
+	            	if (sala.nome.toLowerCase().indexOf(busca) !== -1 || 
+	            		sala.descricao.toLowerCase().indexOf(busca) !== -1)
+	            	return sala;
+	            });
 
-	            return salas_array;
+	            return salas_filtradas;
 	        }
 	    }
 	}

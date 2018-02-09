@@ -32,6 +32,7 @@ class MensagemController extends Controller
 		catch(Exception $e){
 			return redirect('home');
 		}
+
 		foreach ($usuarios as $usuario) {
 			if ($usuario->foto_perfil) {
 				$usuario->foto_perfil = Storage::url('profiles/' . $usuario->foto_perfil);
@@ -59,32 +60,37 @@ class MensagemController extends Controller
 
 	public function create(Request $request, $sala_id)
 	{
+		$request->validate([
+		    'audio' => 'required|boolean',
+		]);
+
 		if ($request->file('arquivo')){
-			$nome_arquivo = 'file_' . Auth::id() . time() . '.' . $request->file('arquivo')->getClientOriginalExtension();
-			$nome_arquivo_original = $request->file('arquivo')->getClientOriginalName();
-			$pasta = 'sala_' . $sala_id . '/';
+			$request->validate([
+			    'arquivo' => 'required|max:20000', //Tamanho maximo do arquivo é 20Mb
+			]);
+			if($request->audio){
+				$nome_arquivo = 'audio_' . Auth::id() . time() . '.wav';
+				$nome_arquivo_original = "audio_file";
+			}
+			else{
+				$nome_arquivo = 'file_' . Auth::id() . time() . '.' . $request->file('arquivo')->getClientOriginalExtension();
+				$nome_arquivo_original = $request->file('arquivo')->getClientOriginalName();
+				
+			}
 
+			$pasta = 'sala_' . $sala_id . '/';
 			$request->file('arquivo')->storeAs($pasta, $nome_arquivo);		
-		}
-
-		if ($request->file('audio_file')){
-			$nome_arquivo = 'audio_' . Auth::id() . time() . '.wav';
-			$nome_arquivo_original = "audio_file";
-			$pasta = 'sala_' . $sala_id . '/';
-
-			$request->file('audio_file')->storeAs($pasta, $nome_arquivo);		
 		}
 
 		$mensagem = new Mensagem([
 			'texto' => isset($nome_arquivo_original) ? $nome_arquivo_original : $request->texto,
 			'hora_visualizado'	=> null,
-			'audio' => true,
+			'audio' => $request->audio,
 			'hora_enviado'	=> date("Y-m-d H:i:s"),
 			'arquivo'	=> isset($nome_arquivo) ? $nome_arquivo : null,
 			'sala_id'	=> $sala_id,
 			'usuario_id' => Auth::id()
 		]);
-
 
 		$mensagem->save();
 
@@ -115,7 +121,6 @@ class MensagemController extends Controller
 
 	public function update($sala_id)
 	{
-		
 		$hora_visualizado = date("Y-m-d H:i:s");
 									
 		Mensagem::where('hora_visualizado', null)

@@ -121,21 +121,33 @@
             }
         },
         methods: {
+            carregar_mensagens: function(){
+                var self = this
+
+                const url = window.location.href + '/mensagem/' + this.mensagens[0].id
+
+                axios.get(url).then(function (response){
+                    // console.log(response.data)
+                    _.forEach(response.data, function(mensagem) {
+                        self.mensagens.unshift(mensagem)
+                    });
+                    if(response.data.length == 0){
+                        self.load_more_btn = false
+                    }
+                })
+            },
             visualizar_mensagem: function (filtrado, mensagens_nao_lidas) {
-                var url = window.location.href
+                const url = window.location.href
                 var self = this
 
                 if (filtrado == false) {
                     for(let i = 0; i < self.mensagens.length; i++){
-                        // console.log(self.mensagens[i])
                         if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null){
                             mensagens_nao_lidas = true
                             break
                         }
                     }
                 }
-
-                // console.log(mensagens_nao_lidas)
 
                 if(mensagens_nao_lidas == true){
                     axios.put(url)
@@ -150,11 +162,13 @@
                 if (!this.texto) { return }
                 var self = this
 
-                var url = window.location.href
+                const url = window.location.href
 
-                axios.post(url, {
-                    texto: this.texto
-                })
+                const formData = new FormData()
+                formData.append('texto', this.texto)
+                formData.append('audio', 0) // audio é false (não é audio)
+
+                axios.post(url, formData)
                 .then(function (response){
                     // console.log(response.data)
                     self.socket.emit('chat message', response.data);
@@ -163,29 +177,7 @@
                 this.texto = ''
 
             },
-            carregar_mensagens: function(){
-                var self = this
-
-                var url = window.location.href + '/mensagem/' + this.mensagens[0].id
-
-                axios.get(url).then(function (response){
-                    // console.log(response.data)
-                    _.forEach(response.data, function(mensagem) {
-                        self.mensagens.unshift(mensagem)
-                    });
-                    if(response.data.length == 0){
-                        self.load_more_btn = false
-                    }
-                })
-            },
-            //Funcao que verifica se o usuario em questao eh o usuario local
-            eh_usuario_local: function(usuario_id){
-                return this.auth_id == usuario_id;
-            },
-            //Funcao que permite o upload de arquivos
-            upload_btn: function(){
-                this.$refs.upload.click()
-            },
+            //função que seleciona o arquivo q foi dado o upload
             file_selected: function(e){
                 let file = e.target.files || e.dataTransfer.files;
                 if (!file.length) {
@@ -193,12 +185,13 @@
                 }
                 this.upload_file(file[0])
             },
+            //função que envia o arquivo para o outro usuário
             upload_file: function (file) {
-                // let reader = new FileReader()
-                let self = this
-                let url = window.location.href
+                var self = this
+                const url = window.location.href
 
                 const formData = new FormData()
+                formData.append('audio', 0) // audio é false (não é audio)
                 formData.append('arquivo', file)
 
                 axios.post(url, formData)
@@ -206,32 +199,6 @@
                   // console.log(response)
                   self.socket.emit('chat message', response.data);
                 })
-            },
-            //Funcao que retorna a foto do usuario
-            foto_usuario: function(usuario_id){
-                return _.find(this.usuarios, { 'id': usuario_id}).foto_perfil
-            },
-            //Funcao que faz ele dar scroll pro fim das mensagens
-            scrollToEnd: function(){
-                let mensagens = document.querySelector("#mensagens")
-                let scrollHeight = mensagens.scrollHeight
-                mensagens.scrollTop = scrollHeight
-            },
-            inicializa_microfone: function(){
-                try {
-                    // Monkeypatch for AudioContext, getUserMedia and URL
-                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-                    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia
-                    window.URL = window.URL || window.webkitURL;
-
-                    // Store the instance of AudioContext globally
-                    this.audio_context = new AudioContext;
-                    console.log('Audio context is ready !');
-                    console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
-                } 
-                catch (e) {
-                    alert('No web audio support in this browser!');
-                }
             },
             startRecording: function(){
                 var self = this
@@ -256,33 +223,25 @@
                     console.error('No live audio input: ' + e);
                 });
             },
+            //função que envia o audio para o outro usuário após o termino da gravação
             stopRecording: function () {
                 var self = this
-                // Stop the recorder instance
+
                 this.recorder && this.recorder.stop();
                 console.log('Stopped recording.');
 
-                // Stop the getUserMedia Audio Stream !
                 this.audio_stream.getAudioTracks()[0].stop();
 
-
-                // Use the Recorder Library to export the recorder Audio as a .wav file
-                // The callback providen in the stop recording method receives the blob
-
-                /**
-                 * Export the AudioBLOB using the exportWAV method.
-                 * Note that this method exports too with mp3 if
-                 * you provide the second argument of the function
-                 */
                 this.recorder && this.recorder.exportWAV(function (blob) {
                     console.log(blob)
                     console.log(URL.createObjectURL(blob))
 
-                    var url = window.location.href
+                    const url = window.location.href
 
                     const formData = new FormData()
 
-                    formData.append('audio_file', blob)
+                    formData.append('arquivo', blob)
+                    formData.append('audio', 1) // audio é true (é audio)
 
                     axios.post(url,formData)
                     .then(function (response){
@@ -290,13 +249,44 @@
                         self.socket.emit('chat message', response.data);
                     })
 
-                    // create WAV download link using audio data blob
-                    // createDownloadLink();
-
-                    // Clear the Recorder to start again !
                     self.recorder.clear();
                 }, ("audio/wav"));
                 this.gravando = false
+            },
+            //Funcao que verifica se o usuario em questao eh o usuario local
+            eh_usuario_local: function(usuario_id){
+                return this.auth_id == usuario_id;
+            },
+            //Funcao que abre a janela de upload de arquivos
+            upload_btn: function(){
+                this.$refs.upload.click()
+            },
+            //Funcao que retorna a foto do usuario
+            foto_usuario: function(usuario_id){
+                return _.find(this.usuarios, { 'id': usuario_id}).foto_perfil
+            },
+            //Funcao que faz ele dar scroll pro fim das mensagens
+            scrollToEnd: function(){
+                let mensagens = document.querySelector("#mensagens")
+                let scrollHeight = mensagens.scrollHeight
+                mensagens.scrollTop = scrollHeight
+            },
+            //Função que inicializa o microfone para poder realizar gravações de audio
+            inicializa_microfone: function(){
+                try {
+                    // Monkeypatch for AudioContext, getUserMedia and URL
+                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia
+                    window.URL = window.URL || window.webkitURL;
+
+                    // Store the instance of AudioContext globally
+                    this.audio_context = new AudioContext;
+                    console.log('Audio context is ready !');
+                    console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+                } 
+                catch (e) {
+                    alert('No web audio support in this browser!');
+                }
             },
         },
     }
