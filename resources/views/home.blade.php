@@ -2,8 +2,13 @@
 
 @section('content')
 <ul class="list-group">
-	<chat :salas=salas>
+	@if(Auth::user()->admin)
+	<chat :salas=salas :usuarios=usuarios :admin=true>
 	</chat>
+	@else
+		<chat :salas=salas>
+		</chat>
+	@endif
 </ul>
 @endsection
 
@@ -13,6 +18,9 @@
 		el: '#app',
 		data: {
 			salas: {!! json_encode($salas) !!},
+			@if(Auth::user('admin'))
+			usuarios: {!! json_encode($usuarios) !!},
+			@endif
 		}
 	})
 </script>

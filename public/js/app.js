@@ -47949,35 +47949,71 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['salas'],
+	props: ['salas', 'usuarios', 'admin'],
 	mounted: function mounted() {},
 
 	data: function data() {
 		return {
-			salas_array: this.salas,
-			nome_chat: ""
+			busca: ""
 		};
 	},
 	computed: {
 		salas_filtradas: function salas_filtradas() {
-			var salas_array = this.salas,
-			    nome_chat = this.nome_chat;
+			var busca = this.busca;
 
-			if (!nome_chat) {
-				return salas_array;
+			if (!busca) {
+				return this.salas;
 			}
 
-			nome_chat = nome_chat.trim().toLowerCase();
+			busca = busca.trim().toLowerCase();
 
-			salas_array = salas_array.filter(function (item) {
-				if (item.nome.toLowerCase().indexOf(nome_chat) !== -1 || item.descricao.toLowerCase().indexOf(nome_chat) !== -1) {
-					return item;
-				}
+			var salas_filtradas = _.filter(this.salas, function (sala) {
+				if (sala.nome.toLowerCase().indexOf(busca) !== -1 || sala.descricao.toLowerCase().indexOf(busca) !== -1) return sala;
 			});
 
-			return salas_array;
+			return salas_filtradas;
+		}
+	},
+	methods: {
+		novo_chat: function novo_chat() {
+			console.log(this.usuarios[0]);
 		}
 	}
 });
@@ -47994,32 +48030,54 @@ var render = function() {
     "div",
     { staticClass: "chat" },
     [
-      _c("div", { staticClass: "form-group m-1" }, [
+      _c("div", { staticClass: "form-group clearfix m-1" }, [
         _c("input", {
           directives: [
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.nome_chat,
-              expression: "nome_chat"
+              value: _vm.busca,
+              expression: "busca"
             }
           ],
-          staticClass: "form-control mr-sm-2 col-md-3 col-12",
+          staticClass: "form-control col-10 col-md-4 float-left",
           attrs: {
             type: "search",
             placeholder: "Procurar nome",
             "aria-label": "Search"
           },
-          domProps: { value: _vm.nome_chat },
+          domProps: { value: _vm.busca },
           on: {
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.nome_chat = $event.target.value
+              _vm.busca = $event.target.value
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.admin,
+                expression: "admin"
+              }
+            ],
+            staticClass: "btn btn-success float-right",
+            attrs: {
+              type: "button",
+              "data-toggle": "modal",
+              "data-target": "#usuarios"
+            },
+            on: { click: _vm.novo_chat }
+          },
+          [_c("span", { staticClass: "oi oi-plus" })]
+        )
       ]),
       _vm._v(" "),
       _c("hr", { staticClass: "my-0" }),
@@ -48049,13 +48107,97 @@ var render = function() {
                 ])
               ]),
               _vm._v(" "),
-              _vm._m(0, true)
+              _c("div", { staticClass: "m-2" }, [
+                _c("a", { staticClass: "btn btn-primary text-white" }, [
+                  _c(
+                    "span",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: sala.nao_lidas,
+                          expression: "sala.nao_lidas"
+                        }
+                      ],
+                      staticClass: "badge badge-light"
+                    },
+                    [_vm._v(_vm._s(sala.nao_lidas))]
+                  ),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "oi oi-chat" })
+                ])
+              ])
             ]
           ),
           _vm._v(" "),
           _c("hr", { staticClass: "my-0" })
         ])
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "usuarios",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "modal-dialog", attrs: { role: "document" } },
+            [
+              _c(
+                "div",
+                { staticClass: "modal-content" },
+                [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _vm._l(_vm.usuarios, function(usuario) {
+                    return _c("div", { staticClass: "modal-body" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "media list-group-item-action",
+                          attrs: { href: "sala/criar/" + usuario.id }
+                        },
+                        [
+                          _c("img", {
+                            staticClass:
+                              "align-self-center mr-3 rounded-circle img-fluid img-thumbnail",
+                            attrs: { width: "80px", src: usuario.foto_sala }
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "media-body" }, [
+                            _c("h5", { staticClass: "mt-0 mb-1" }, [
+                              _vm._v(_vm._s(usuario.nome))
+                            ]),
+                            _vm._v(" "),
+                            _c("small", { staticClass: "text-muted" }, [
+                              _vm._v(_vm._s(usuario.descricao))
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(1, true)
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("hr", { staticClass: "my-0" })
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _vm._m(2)
+                ],
+                2
+              )
+            ]
+          )
+        ]
+      )
     ],
     2
   )
@@ -48065,12 +48207,50 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Iniciar uma conversa com:")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "m-2" }, [
       _c("a", { staticClass: "btn btn-primary text-white" }, [
-        _c("span", { staticClass: "badge badge-light" }),
-        _vm._v(" "),
         _c("span", { staticClass: "oi oi-chat" })
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Cancelar")]
+      )
     ])
   }
 ]
@@ -48259,21 +48439,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
+        carregar_mensagens: function carregar_mensagens() {
+            var self = this;
+
+            var url = window.location.href + '/mensagem/' + this.mensagens[0].id;
+
+            axios.get(url).then(function (response) {
+                // console.log(response.data)
+                _.forEach(response.data, function (mensagem) {
+                    self.mensagens.unshift(mensagem);
+                });
+                if (response.data.length == 0) {
+                    self.load_more_btn = false;
+                }
+            });
+        },
         visualizar_mensagem: function visualizar_mensagem(filtrado, mensagens_nao_lidas) {
             var url = window.location.href;
             var self = this;
 
             if (filtrado == false) {
                 for (var i = 0; i < self.mensagens.length; i++) {
-                    // console.log(self.mensagens[i])
                     if (self.mensagens[i].usuario.id != self.auth_id && self.mensagens[i].hora_visualizado == null) {
                         mensagens_nao_lidas = true;
                         break;
                     }
                 }
             }
-
-            // console.log(mensagens_nao_lidas)
 
             if (mensagens_nao_lidas == true) {
                 axios.put(url).then(function (response) {
@@ -48290,38 +48482,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var url = window.location.href;
 
-            axios.post(url, {
-                texto: this.texto
-            }).then(function (response) {
+            var formData = new FormData();
+            formData.append('texto', this.texto);
+            formData.append('audio', 0); // audio é false (não é audio)
+
+            axios.post(url, formData).then(function (response) {
                 // console.log(response.data)
                 self.socket.emit('chat message', response.data);
             });
 
             this.texto = '';
         },
-        carregar_mensagens: function carregar_mensagens() {
-            var self = this;
-
-            var url = window.location.href + '/mensagem/' + this.mensagens[0].id;
-
-            axios.get(url).then(function (response) {
-                // console.log(response.data)
-                _.forEach(response.data, function (mensagem) {
-                    self.mensagens.unshift(mensagem);
-                });
-                if (response.data.length == 0) {
-                    self.load_more_btn = false;
-                }
-            });
-        },
-        //Funcao que verifica se o usuario em questao eh o usuario local
-        eh_usuario_local: function eh_usuario_local(usuario_id) {
-            return this.auth_id == usuario_id;
-        },
-        //Funcao que permite o upload de arquivos
-        upload_btn: function upload_btn() {
-            this.$refs.upload.click();
-        },
+        //função que seleciona o arquivo q foi dado o upload
         file_selected: function file_selected(e) {
             var file = e.target.files || e.dataTransfer.files;
             if (!file.length) {
@@ -48329,43 +48501,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
             this.upload_file(file[0]);
         },
+        //função que envia o arquivo para o outro usuário
         upload_file: function upload_file(file) {
-            // let reader = new FileReader()
             var self = this;
             var url = window.location.href;
 
             var formData = new FormData();
+            formData.append('audio', 0); // audio é false (não é audio)
             formData.append('arquivo', file);
 
             axios.post(url, formData).then(function (response) {
                 // console.log(response)
                 self.socket.emit('chat message', response.data);
             });
-        },
-        //Funcao que retorna a foto do usuario
-        foto_usuario: function foto_usuario(usuario_id) {
-            return _.find(this.usuarios, { 'id': usuario_id }).foto_perfil;
-        },
-        //Funcao que faz ele dar scroll pro fim das mensagens
-        scrollToEnd: function scrollToEnd() {
-            var mensagens = document.querySelector("#mensagens");
-            var scrollHeight = mensagens.scrollHeight;
-            mensagens.scrollTop = scrollHeight;
-        },
-        inicializa_microfone: function inicializa_microfone() {
-            try {
-                // Monkeypatch for AudioContext, getUserMedia and URL
-                window.AudioContext = window.AudioContext || window.webkitAudioContext;
-                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
-                window.URL = window.URL || window.webkitURL;
-
-                // Store the instance of AudioContext globally
-                this.audio_context = new AudioContext();
-                console.log('Audio context is ready !');
-                console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
-            } catch (e) {
-                alert('No web audio support in this browser!');
-            }
         },
         startRecording: function startRecording() {
             var self = this;
@@ -48390,23 +48538,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.error('No live audio input: ' + e);
             });
         },
+        //função que envia o audio para o outro usuário após o termino da gravação
         stopRecording: function stopRecording() {
             var self = this;
-            // Stop the recorder instance
+
             this.recorder && this.recorder.stop();
             console.log('Stopped recording.');
 
-            // Stop the getUserMedia Audio Stream !
             this.audio_stream.getAudioTracks()[0].stop();
 
-            // Use the Recorder Library to export the recorder Audio as a .wav file
-            // The callback providen in the stop recording method receives the blob
-
-            /**
-             * Export the AudioBLOB using the exportWAV method.
-             * Note that this method exports too with mp3 if
-             * you provide the second argument of the function
-             */
             this.recorder && this.recorder.exportWAV(function (blob) {
                 console.log(blob);
                 console.log(URL.createObjectURL(blob));
@@ -48415,20 +48555,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                 var formData = new FormData();
 
-                formData.append('audio_file', blob);
+                formData.append('arquivo', blob);
+                formData.append('audio', 1); // audio é true (é audio)
 
                 axios.post(url, formData).then(function (response) {
                     console.log(response.data);
                     self.socket.emit('chat message', response.data);
                 });
 
-                // create WAV download link using audio data blob
-                // createDownloadLink();
-
-                // Clear the Recorder to start again !
                 self.recorder.clear();
             }, "audio/wav");
             this.gravando = false;
+        },
+        //Funcao que verifica se o usuario em questao eh o usuario local
+        eh_usuario_local: function eh_usuario_local(usuario_id) {
+            return this.auth_id == usuario_id;
+        },
+        //Funcao que abre a janela de upload de arquivos
+        upload_btn: function upload_btn() {
+            this.$refs.upload.click();
+        },
+        //Funcao que retorna a foto do usuario
+        foto_usuario: function foto_usuario(usuario_id) {
+            return _.find(this.usuarios, { 'id': usuario_id }).foto_perfil;
+        },
+        //Funcao que faz ele dar scroll pro fim das mensagens
+        scrollToEnd: function scrollToEnd() {
+            var mensagens = document.querySelector("#mensagens");
+            var scrollHeight = mensagens.scrollHeight;
+            mensagens.scrollTop = scrollHeight;
+        },
+        //Função que inicializa o microfone para poder realizar gravações de audio
+        inicializa_microfone: function inicializa_microfone() {
+            try {
+                // Monkeypatch for AudioContext, getUserMedia and URL
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+                window.URL = window.URL || window.webkitURL;
+
+                // Store the instance of AudioContext globally
+                this.audio_context = new AudioContext();
+                console.log('Audio context is ready !');
+                console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+            } catch (e) {
+                alert('No web audio support in this browser!');
+            }
         }
     }
 });
