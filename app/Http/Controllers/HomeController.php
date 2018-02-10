@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 use Udois\Sala;
 use Udois\Usuario;
+use Udois\Pagina;
 use Auth;
 use Storage;
+use Exception;
 
 class HomeController extends Controller
 {
@@ -86,8 +88,24 @@ class HomeController extends Controller
 
     }
 
+    public function create($pagina_id)
+    {
+        try{
+            $pagina = Pagina::findOrFail($pagina_id);
+            $admin = Usuario::where('admin', true)->firstOrFail();
+        } catch(Exception $e){
+            return redirect()->back();
+        }
+        
+        return redirect('sala/' . $sala->id);
+    }
+
     public function adminCreate($usuario_id)
     {
-        dd($usuario_id);
+        $sala = Sala::create();
+        $sala->usuarios()->attach([Auth::id(), $usuario_id]);
+
+        return redirect('sala/' . $sala->id);
     }
+
 }

@@ -13,7 +13,7 @@
 							</h5>
 						</div>
 						<div class="card-footer text-left">
-							<a href="#" class="text-white"><span class="oi oi-chat"></span> Falar com o {{ $admin->nome }}</a>
+							<a href="/sala/criar/{{$pagina->id}}" class="text-white"><span class="oi oi-chat"></span> Falar com o {{ $admin->nome }}</a>
 						</div>
 					</div>
 				</div>

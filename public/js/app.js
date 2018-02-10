@@ -48163,7 +48163,7 @@ var render = function() {
                         "a",
                         {
                           staticClass: "media list-group-item-action",
-                          attrs: { href: "sala/criar/" + usuario.id }
+                          attrs: { href: "admin/sala/criar/" + usuario.id }
                         },
                         [
                           _c("img", {

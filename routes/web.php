@@ -21,12 +21,15 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::get('/perfil','UsuarioController@index');
 	Route::put('/perfil','UsuarioController@update');
 
-	Route::get('/sala/{id}', 'MensagemController@index');
-	Route::get('/sala/{id}/mensagem/{mensagem_id}', 'MensagemController@loadMore');
-	Route::post('/sala/{id}', 'MensagemController@create');
-	Route::put('/sala/{id}', 'MensagemController@update');
+	Route::prefix('sala')->group(function(){
+		Route::get('/{id}', 'MensagemController@index');
+		Route::get('/{id}/mensagem/{mensagem_id}', 'MensagemController@loadMore');
+		Route::post('/{id}', 'MensagemController@create');
+		Route::put('/{id}', 'MensagemController@update');
+		Route::get('/criar/{pagina_id}', 'HomeController@create');
+	});
 
-	Route::group(['middleware'=>'admin'], function(){
+	Route::group(['middleware'=>'admin', 'prefix' => 'admin'], function(){
 		Route::get('/sala/criar/{usuario_id}', 'HomeController@adminCreate');
 		Route::get('/cria-pagina', 'PaginaController@index');
 		Route::get('/lista-pagina', 'PaginaController@list');

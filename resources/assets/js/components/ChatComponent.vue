@@ -34,7 +34,7 @@
 						</button>
 					</div>
 					<div v-for="usuario in usuarios" class="modal-body">
-						<a :href="'sala/criar/'+ usuario.id" class="media list-group-item-action">
+						<a :href="'admin/sala/criar/'+ usuario.id" class="media list-group-item-action">
 							<img class="align-self-center mr-3 rounded-circle img-fluid img-thumbnail" width="80px" :src="usuario.foto_sala" >
 							<div class="media-body">
 								<h5 class="mt-0 mb-1">{{ usuario.nome }}</h5>

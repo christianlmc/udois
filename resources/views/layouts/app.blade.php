@@ -45,8 +45,8 @@
 					@else
 						<a class="dropdown-item {{Request::is("/") ? "active" : " "}}" href="/">Home</a>
 						@if(Auth::user()->admin)
-							<a class="dropdown-item {{Request::is("cria-pagina") ? "active" : " "}}" href="/cria-pagina">Páginas</a>
-							<a class="dropdown-item {{Request::is("lista-pagina") ? "active" : " "}}" href="/lista-pagina">Lista Páginas</a>
+							<a class="dropdown-item {{Request::is("admin/cria-pagina") ? "active" : " "}}" href="/admin/cria-pagina">Páginas</a>
+							<a class="dropdown-item {{Request::is("admin/lista-pagina") ? "active" : " "}}" href="/admin/lista-pagina">Lista Páginas</a>
 						@endif
 						<a class="dropdown-item {{Request::is("perfil") ? "active" : " " }}" href="/perfil">Meu perfil</a>
 						<a class="dropdown-item" href="{{ route('logout') }}"

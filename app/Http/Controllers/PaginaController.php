@@ -15,11 +15,11 @@ class PaginaController extends Controller
     }
 
     public function single($url){
+        
         $paginas = Pagina::where('url', $url)->get();
         $admin = Usuario::where('admin', true)->first();
 
-
-        if($paginas)
+        if(!$paginas->isEmpty())
             return view('pagina', compact('paginas', 'admin'));
         else
             return abort(404);
