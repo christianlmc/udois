@@ -40,7 +40,7 @@
 
 			</div>
 			<div class="modal-footer">
-				{!! Form::open(array('url' => '/lista-pagina', 'method' => 'delete')) !!}
+				{!! Form::open(array('url' => 'admin/lista-pagina', 'method' => 'delete')) !!}
 					<input type="text" name="id" value="" hidden>
 					<button type="submit" class="btn btn-danger" id="excluir-pagina">Excluir a Página</button>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -59,7 +59,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				{!! Form::open(array('url' => '/lista-pagina', 'method' => 'put', 'id' => 'form', 'files' => true)) !!}
+				{!! Form::open(array('url' => 'admin/lista-pagina', 'method' => 'put', 'id' => 'form', 'files' => true)) !!}
 					<div class="row justify-content-center">
 						<div class="col-9">
 							<div class="form-group">

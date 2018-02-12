@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Udois\Sala;
 use Udois\Usuario;
 use Udois\Pagina;
+use Udois\Mensagem;
 use Auth;
 use Storage;
 use Exception;
@@ -96,8 +97,45 @@ class HomeController extends Controller
         } catch(Exception $e){
             return redirect()->back();
         }
-        
-        return redirect('sala/' . $sala->id);
+
+        if (Auth::user() == $admin){
+            return redirect('home');
+        }
+        else{
+            $salas_usuario = Auth::user()->salas;
+            $salas_admin = $admin->salas;
+
+            $sala_em_comum = $salas_usuario->intersect($salas_admin)->first();
+
+            if(empty($sala_em_comum)){
+                $sala = Sala::create();
+                $sala->usuarios()->attach([Auth::id(), $admin->id]);
+                $frases_pagina = [$pagina->frase_2, $pagina->frase_3, $pagina->frase_4];
+
+                $mensagens_automaticas = [];
+                $data = new \DateTime();
+                foreach ($frases_pagina as $frase) {
+                    if($frase){
+                        $data->modify("+1 second");
+                        $mensagens_automaticas[] = [
+                            'texto' => $frase,
+                            'hora_visualizado' => null,
+                            'audio' => false,
+                            'hora_enviado'  => $data->format("Y-m-d H:i:s"),
+                            'arquivo'   => null,
+                            'sala_id'   => $sala->id,
+                            'usuario_id' => $admin->id,
+                            'created_at' => $data->format("Y-m-d H:i:s")
+                        ];
+                    }
+                }
+                // dd($mensagens_automaticas);
+                Mensagem::insert($mensagens_automaticas);
+                return redirect('sala/' . $sala->id);
+            }else{
+                return redirect('sala/' . $sala_em_comum->id);
+            }
+        }
     }
 
     public function adminCreate($usuario_id)

@@ -14,10 +14,10 @@ class CreateMembrosTable extends Migration
     public function up()
     {
         Schema::create('membros', function (Blueprint $table) {
-            $table->integer('usuario_id')->unsigned();
-            $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->integer('sala_id')->unsigned();
             $table->foreign('sala_id')->references('id')->on('salas');
+            $table->integer('usuario_id')->unsigned();
+            $table->foreign('usuario_id')->references('id')->on('usuarios');
 
             $table->primary(['usuario_id','sala_id']);
 

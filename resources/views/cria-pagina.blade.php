@@ -16,7 +16,7 @@
 				    </div>
 				</div>
 			@endif
-			{!! Form::open(array('url' => '/cria-pagina', 'id' => 'form', 'files' => true)) !!}
+			{!! Form::open(array('url' => 'admin/cria-pagina', 'id' => 'form', 'files' => true)) !!}
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
