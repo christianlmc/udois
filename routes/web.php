@@ -38,9 +38,9 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::put('/lista-pagina', 'PaginaController@edit');
 		Route::delete('/lista-pagina', 'PaginaController@delete');
 	});
+	Route::get('storage/download/{sala_id}/{filename}','ArquivoController@downloadFile');
 });
 
 Route::get('/pagina/{url}', 'PaginaController@single');
 Route::get('storage/banners/{filename}','ArquivoController@showBanner');
 Route::get('storage/profiles/{filename}','ArquivoController@showProfile');
-Route::get('storage/download/{sala_id}/{filename}','ArquivoController@downloadFile');

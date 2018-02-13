@@ -66,6 +66,8 @@ class HomeController extends Controller
                                                 ->count();
         }
 
+        $salas = $salas->sortByDesc('nao_lidas')->values();
+
         if (Auth::user('admin')) {
             $usuarios_sem_chat_com_admin = Usuario::whereNotIn('id', $id_usuarios)->get();
 
