@@ -70,9 +70,14 @@
 				<div class="row justify-content-center">
 					<div class="col-sm col-md-4">
 						<div class="form-group">
-							<input type="text" class="form-control {{ $errors->has('url') ? ' is-invalid' : '' }}" name="url" aria-describedby="url" placeholder="URL" value="{{ old('url') }}" required>
-							<div class="invalid-feedback">
-								{{ $errors->first('url') }}
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<div class="input-group-text"><strong>pagina/</strong></div>
+								</div>
+								<input type="text" class="form-control {{ $errors->has('url') ? ' is-invalid' : '' }}" name="url" aria-describedby="url" placeholder="URL" value="{{ old('url') }}" required>
+								<div class="invalid-feedback">
+									{{ $errors->first('url') }}
+								</div>
 							</div>
 						</div>
 					</div>

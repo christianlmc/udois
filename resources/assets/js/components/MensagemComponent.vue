@@ -27,7 +27,7 @@
                                     </a>
                                 </div>
                                 <div class="card-text" v-else>
-                                    <audio controls controlsList="nodownload" :src="'/storage/download/' + sala.id + '/' + mensagem.arquivo" ></audio>
+                                    <audio class="w-100" controls controlsList="nodownload" :src="'/storage/download/' + sala.id + '/' + mensagem.arquivo" ></audio>
                                 </div>
                                 <div class="card-text">
                                     <small class="text-muted">{{mensagem.hora_enviado}}</small>
@@ -89,8 +89,8 @@
         data: function () {
             return {
                 texto: '',
-                mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-8 col-md-5 px-0'},
-                mensagem_direita:  { cor: 'bg-wpp-green', alinhamento: 'col-8 offset-4 col-md-5 offset-md-7'},
+                mensagem_esquerda: { cor: 'bg-light', alinhamento: 'col-11 col-lg-5 px-0'},
+                mensagem_direita:  { cor: 'bg-wpp-green', alinhamento: 'col-11 offset-1 col-lg-5 offset-lg-7'},
                 load_more_btn: true,
                 gravando: false,
                 recorder: '',
